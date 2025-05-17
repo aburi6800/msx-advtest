@@ -1,0 +1,1 @@
+pletter <infilen>.BIN 7 <outfile>.BIN
