@@ -1,6 +1,6 @@
 ; pletter v0.5c msx unpacker
 ; Original source : Copyright (c) 2002-2003 Team Bomba
-; z88dk patch     : Copyright (C) 2025 aburi6800 (Hitoshi Iwai)
+; z88dk patch     : Copyright (c) 2025 aburi6800 (Hitoshi Iwai)
 
 ; call unpack with hl pointing to some pletter5 data, and de pointing to the destination.
 ; changes all registers
@@ -32,10 +32,17 @@ _unpack:
 
   ; Get call parameters from z88dk C.
   ; Not necessary when calling from asm.
-  pop bc
-  pop de
-  pop hl
+  ld hl, 2
+  add hl, sp
+  ld e,(hl)
+  inc hl
+  ld d,(hl)
+  inc hl
+  ld c,(hl)
+  inc hl
+  ld b,(hl)
   push bc
+  pop hl
 
 
   ifdef LENGTHINDATA
