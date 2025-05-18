@@ -18,6 +18,6 @@ _switch_bank:
     add     hl, sp
     ld      a, (hl)     ; get arg value
 
-    ld      hl, 0x7000  ; ASCII16 マッパーの制御ポート
+    ld      hl, 0x7000  ; ASCII16 マッパーの制御ポート(0x8000～0x8fff)
     ld      (hl), a
     ret
