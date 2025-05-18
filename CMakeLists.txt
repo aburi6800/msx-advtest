@@ -6,7 +6,7 @@ project(advtest.rom C ASM)
 enable_language(ASM)
 
 # for debug
-set(CMAKE_VERBOSE_MAKEFILE 1)
+#set(CMAKE_VERBOSE_MAKEFILE 1)
 
 include(./cmake/macros.cmake)
 

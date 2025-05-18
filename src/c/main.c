@@ -135,9 +135,9 @@ Scene scenes[MAX_SCENES] = {
         .flag_to_check       = 0,
         .next_scene_if_unset = 0,
         .next_scene_if_set   = 0,
-        .graphic_bank        = 4,
-        .graphic_ptn         = PTN_ROOM4,
-        .graphic_col         = COL_ROOM4,
+        .graphic_bank        = 1,
+        .graphic_ptn         = PTN_ROOM1,
+        .graphic_col         = COL_ROOM1,
         .message             = message0100,
         .choices = {
             {
@@ -279,9 +279,9 @@ Scene scenes[MAX_SCENES] = {
         .flag_to_check       = 0,
         .next_scene_if_unset = 0,
         .next_scene_if_set   = 0,
-        .graphic_bank        = 1,
-        .graphic_ptn         = PTN_ROOM1,
-        .graphic_col         = PTN_ROOM1,
+        .graphic_bank        = 3,
+        .graphic_ptn         = PTN_ROOM3,
+        .graphic_col         = COL_ROOM3,
         .message             = message0300,
         .choices = {
             {
@@ -412,7 +412,6 @@ void input_command(uint8_t _y)
         }
 
         // それ以外ならバッファに追加（←ローマ字カナ入力をするときは、ここで変換処理を呼べばOK）
-        // BUG: 最大文字数を超えても入力できてしまう（buffer_ixのチェックをしてない）
         if (buffer_ix < 31 - sizeof(promptMessage)) {
             input_buffer[buffer_ix++] = key_buffer;
         }

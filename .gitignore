@@ -55,3 +55,5 @@ dist/*
 build/*
 *.lis
 *.sym
+
+utils/build/*

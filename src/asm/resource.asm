@@ -1,18 +1,9 @@
 ; license:MIT License
 ; copyright-holders:hitoshi Iwai
 
-PUBLIC _PTN_ROOM1
-PUBLIC _COL_ROOM1
-
-PUBLIC _PTN_ROOM2
-PUBLIC _COL_ROOM2
-
-PUBLIC _PTN_ROOM3
-PUBLIC _COL_ROOM3
-
-PUBLIC _PTN_ROOM4
-PUBLIC _COL_ROOM4
-
+PUBLIC _PTN_ROOM1, _COL_ROOM1
+PUBLIC _PTN_ROOM2, _COL_ROOM2
+PUBLIC _PTN_ROOM3, _COL_ROOM3
 
 SECTION BANK_01
 
@@ -31,13 +22,6 @@ INCBIN "../../resources/room2c.col"
 SECTION BANK_03
 
 _PTN_ROOM3:
-INCBIN "../../resources/room1c.ptn"
-_COL_ROOM3:
-INCBIN "../../resources/room1c.col"
-
-SECTION BANK_04
-
-_PTN_ROOM4:
 INCBIN "../../resources/room3c.ptn"
-_COL_ROOM4:
+_COL_ROOM3:
 INCBIN "../../resources/room3c.col"
