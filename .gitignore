@@ -56,4 +56,5 @@ build/*
 *.lis
 *.sym
 
-utils/build/*
+utils/pletter/build/*
+utils/work/*
