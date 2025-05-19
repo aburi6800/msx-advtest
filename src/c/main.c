@@ -60,8 +60,10 @@ typedef struct {
     uint8_t next_scene_if_unset;    // フラグが未設定のときのシーンID
     uint8_t next_scene_if_set;      // フラグが設定済のときのシーンID
     uint8_t graphic_bank;           // グラフィックデータのバンク
-    uint8_t *graphic_ptn;           // グラフィックデータ(パターンジェネレータテーブル)
-    uint8_t *graphic_col;           // グラフィックデータ(カラーテーブル)
+    uint8_t *graphic_ptn0;          // グラフィックデータ(パターンジェネレータテーブル BANK0)
+    uint8_t *graphic_ptn1;          // グラフィックデータ(パターンジェネレータテーブル BANK1)
+    uint8_t *graphic_col0;          // グラフィックデータ(カラーテーブル BANK0)
+    uint8_t *graphic_col1;          // グラフィックデータ(カラーテーブル BANK1)
     uint8_t *message;               // シーンの最初に表示するメッセージ
     Choice choices[MAX_CHOICES];
 } Scene;
@@ -136,8 +138,10 @@ Scene scenes[MAX_SCENES] = {
         .next_scene_if_unset = 0,
         .next_scene_if_set   = 0,
         .graphic_bank        = 1,
-        .graphic_ptn         = PTN_ROOM1,
-        .graphic_col         = COL_ROOM1,
+        .graphic_ptn0        = PTN_ROOM1_0,
+        .graphic_ptn1        = PTN_ROOM1_1,
+        .graphic_col0        = COL_ROOM1_0,
+        .graphic_col1        = COL_ROOM1_1,
         .message             = message0100,
         .choices = {
             {
@@ -230,8 +234,10 @@ Scene scenes[MAX_SCENES] = {
         .next_scene_if_unset = 0,
         .next_scene_if_set   = 0,
         .graphic_bank        = 2,
-        .graphic_ptn         = PTN_ROOM2,
-        .graphic_col         = COL_ROOM2,
+        .graphic_ptn0        = PTN_ROOM2_0,
+        .graphic_ptn1        = PTN_ROOM2_1,
+        .graphic_col0        = COL_ROOM2_0,
+        .graphic_col1        = COL_ROOM2_1,
         .message             = message0200,
         .choices = {
             {
@@ -280,8 +286,10 @@ Scene scenes[MAX_SCENES] = {
         .next_scene_if_unset = 0,
         .next_scene_if_set   = 0,
         .graphic_bank        = 3,
-        .graphic_ptn         = PTN_ROOM3,
-        .graphic_col         = COL_ROOM3,
+        .graphic_ptn0        = PTN_ROOM3_0,
+        .graphic_ptn1        = PTN_ROOM3_1,
+        .graphic_col0        = COL_ROOM3_0,
+        .graphic_col1        = COL_ROOM3_1,
         .message             = message0300,
         .choices = {
             {
@@ -307,8 +315,10 @@ Scene scenes[MAX_SCENES] = {
         .flag_to_check       = 0,
         .next_scene_if_unset = 0,
         .next_scene_if_set   = 0,
-        .graphic_ptn         = 0,
-        .graphic_col         = 0,
+        .graphic_ptn0        = 0,
+        .graphic_ptn1        = 0,
+        .graphic_col0        = 0,
+        .graphic_col1        = 0,
         .message             = message0400,
         .choices = {
             {
@@ -339,7 +349,8 @@ uint8_t game_flags = 0;
 uint8_t matched = 0;
 
 // 展開先ワークエリア
-uint8_t temp[2048*2];
+//uint8_t temp[2048*2];
+uint8_t temp[2048];
 
 // シーンデータへの参照
 Scene scene;
@@ -451,12 +462,16 @@ void run_scene(int start_scene_id)
                 }
 
                 // グラフィックデータが設定されている場合はデータを展開し表示する
-                if (scene.graphic_ptn != 0) {
+                if (scene.graphic_ptn0 != 0) {
                     switch_bank(scene.graphic_bank);
-                    unpack(scene.graphic_ptn, temp);
-                    vdp_vwrite(temp, VRAM_PTN_GENR_TBL1, 0x1000);
-                    unpack(scene.graphic_col, temp);
-                    vdp_vwrite(temp, VRAM_COLOR_TBL1, 0x1000);
+                    unpack(scene.graphic_ptn0, temp);
+                    vdp_vwrite(temp, VRAM_PTN_GENR_TBL1, 0x04c0);
+                    unpack(scene.graphic_ptn1, temp);
+                    vdp_vwrite(temp, VRAM_PTN_GENR_TBL2, 0x0390);
+                    unpack(scene.graphic_col0, temp);
+                    vdp_vwrite(temp, VRAM_COLOR_TBL1, 0x04c0);
+                    unpack(scene.graphic_col1, temp);
+                    vdp_vwrite(temp, VRAM_COLOR_TBL2, 0x0390);
                 }
 
                 // メッセージを表示
@@ -542,24 +557,41 @@ void main()
     set_mangled_mode();
     msx_set_sprite_mode(sprite_large);
 
-    // バンク3のパターンジェネレータテーブル／カラーテーブル設定
-    vdp_vwrite(FONT_PTN_TBL, VRAM_PTN_GENR_TBL3, 0x0800);
-    vdp_vwrite(FONT_COL_TBL, VRAM_COLOR_TBL3, 0x0800);
-
-    // バンク1～2のパターンネームテーブル設定
-    uint8_t code = 0;    
-    for (uint16_t i = 0; i < 256; i++) {
-        temp[i] = code++;
-    }
-    vdp_vwrite(temp, VRAM_PTN_NAME_TBL1, 0x100);
-    vdp_vwrite(temp, VRAM_PTN_NAME_TBL2, 0x100);
-
     // キークリックスイッチOFF
     *(uint8_t *)MSX_CLIKSW = 0;
 
     // キーのオートリピート開始までの時間間隔
     // C-BIOSでは初期値1のため、明示的に設定
     *(uint8_t *)MSX_REPCNT = 50;
+
+    // フォントパターンをバンク0～3のパターンジェネレータテーブル／カラーテーブルに設定
+    vdp_vwrite(FONT_PTN_TBL, VRAM_PTN_GENR_TBL3, 0x0800);
+    vdp_vwrite(FONT_COL_TBL, VRAM_COLOR_TBL3, 0x0800);
+
+    // バンク1～2のパターンネームテーブル設定
+    uint8_t code = 0;
+
+    for (uint16_t i = 0; i < 256; i++) {
+        temp[i] = 254;
+    }
+    code = 0;
+    for (uint8_t i = 0; i < 8; i++) {
+        for (uint8_t j = 0; j < 19; j++) {
+            temp[i * 32 + j] = code++;
+        }
+    }
+    vdp_vwrite(temp, VRAM_PTN_NAME_TBL1, 0x100);
+
+    for (uint16_t i = 0; i < 256; i++) {
+        temp[i] = 254;
+    }
+    code = 0;
+    for (uint8_t i = 0; i < 6; i++) {
+        for (uint8_t j = 0; j < 19; j++) {
+            temp[i * 32 + j] = code++;
+        }
+    }
+    vdp_vwrite(temp, VRAM_PTN_NAME_TBL2, 0x100);
 
 
     while (0 == 0) {
