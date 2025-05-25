@@ -52,7 +52,7 @@ convert_map = {
 
 def convert_char(c):
     # 正規化で濁点・半濁点を分離
-    normalized = unicodedata.normalize('NFKC', c.upper())
+    normalized = unicodedata.normalize('NFKD', c.upper())
 
     result = []
     for ch in normalized:
