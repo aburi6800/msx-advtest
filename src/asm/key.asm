@@ -1,5 +1,5 @@
 ; license:MIT License
-; copyright-holders:hitoshi Iwai
+; copyright-holders:aburi6800 (Hitoshi Iwai)
 
 #define MSX_CHSNS           0x009c
 #define MSX_CHGET           0x009f

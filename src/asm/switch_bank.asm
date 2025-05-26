@@ -1,5 +1,5 @@
 ; license:MIT License
-; copyright-holders:hitoshi Iwai
+; copyright-holders:aburi6800 (Hitoshi Iwai)
 
 SECTION code_user
 

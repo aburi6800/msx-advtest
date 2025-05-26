@@ -1,3 +1,6 @@
+# License:MIT License
+# copyright-holders:aburi6800 (Hitoshi Iwai)
+
 # 画像は19x14キャラクター = 152x112ドット
 # 8バイト = 1キャラクター データの並びは以下となる
 #   chr1  chr2  ...
@@ -52,11 +55,11 @@ def main():
     input_filename = sys.argv[1]
     base, ext = os.path.splitext(input_filename)
     if not ext:
-        print("警告: 入力ファイルに拡張子がありません。出力は .bank0 / .bank1 になります。")
-        ext = ""  # 拡張子なしのまま処理
+        print("警告: 入力ファイルに拡張子がありません。出力は .bin になります。")
+        ext = ".bin"  # 拡張子なしのまま処理
 
-    output_filename_bank0 = f"{base}_bank0{ext}"
-    output_filename_bank1 = f"{base}_bank1{ext}"
+    output_filename_bank0 = f"{base}_blk0{ext}"
+    output_filename_bank1 = f"{base}_blk1{ext}"
 
     # 入力ファイル読み込み
     with open(input_filename, "rb") as f:

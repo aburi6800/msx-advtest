@@ -1,39 +1,28 @@
 ; license:MIT License
-; copyright-holders:hitoshi Iwai
+; copyright-holders:aburi6800 (Hitoshi Iwai)
 
-PUBLIC _PTN_ROOM1_0, _PTN_ROOM1_1, _COL_ROOM1_0, _COL_ROOM1_1
-PUBLIC _PTN_ROOM2_0, _PTN_ROOM2_1, _COL_ROOM2_0, _COL_ROOM2_1
-PUBLIC _PTN_ROOM3_0, _PTN_ROOM3_1, _COL_ROOM3_0, _COL_ROOM3_1
+PUBLIC _SC01_PTN_BLK0, _SC01_PTN_BLK1, _SC01_COL_BLK0, _SC01_COL_BLK1
+PUBLIC _SC02_PTN_BLK0, _SC02_PTN_BLK1, _SC02_COL_BLK0, _SC02_COL_BLK1
 
 SECTION BANK_01
 
-_PTN_ROOM1_0:
-INCBIN "../../resources/room1_bank0_c.ptn"
-_PTN_ROOM1_1:
-INCBIN "../../resources/room1_bank1_c.ptn"
-_COL_ROOM1_0:
-INCBIN "../../resources/room1_bank0_c.col"
-_COL_ROOM1_1:
-INCBIN "../../resources/room1_bank1_c.col"
+_SC01_PTN_BLK0:
+INCBIN "../../resources/sc01_ptn_blk0.plet5"
+_SC01_PTN_BLK1:
+INCBIN "../../resources/sc01_ptn_blk1.plet5"
+_SC01_COL_BLK0:
+INCBIN "../../resources/sc01_col_blk0.plet5"
+_SC01_COL_BLK1:
+INCBIN "../../resources/sc01_col_blk1.plet5"
 
 SECTION BANK_02
 
-_PTN_ROOM2_0:
-INCBIN "../../resources/room1_bank0_c.ptn"
-_PTN_ROOM2_1:
-INCBIN "../../resources/room1_bank1_c.ptn"
-_COL_ROOM2_0:
-INCBIN "../../resources/room1_bank0_c.col"
-_COL_ROOM2_1:
-INCBIN "../../resources/room1_bank1_c.col"
+_SC02_PTN_BLK0:
+INCBIN "../../resources/sc02_ptn_blk0.plet5"
+_SC02_PTN_BLK1:
+INCBIN "../../resources/sc02_ptn_blk1.plet5"
+_SC02_COL_BLK0:
+INCBIN "../../resources/sc02_col_blk0.plet5"
+_SC02_COL_BLK1:
+INCBIN "../../resources/sc02_col_blk1.plet5"
 
-SECTION BANK_03
-
-_PTN_ROOM3_0:
-INCBIN "../../resources/room1_bank0_c.ptn"
-_PTN_ROOM3_1:
-INCBIN "../../resources/room1_bank1_c.ptn"
-_COL_ROOM3_0:
-INCBIN "../../resources/room1_bank0_c.col"
-_COL_ROOM3_1:
-INCBIN "../../resources/room1_bank1_c.col"

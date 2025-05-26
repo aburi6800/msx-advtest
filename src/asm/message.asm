@@ -1,5 +1,5 @@
 ; license:MIT License
-; copyright-holders:hitoshi Iwai
+; copyright-holders:aburi6800 (Hitoshi Iwai)
 
 #define MSX_WRTVRM          0x004d
 #define VRAM_PTN_NAME_TBL1  0x1800

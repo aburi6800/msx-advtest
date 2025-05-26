@@ -1,3 +1,6 @@
+# License:MIT License
+# copyright-holders:aburi6800 (Hitoshi Iwai)
+
 import sys
 import unicodedata
 
