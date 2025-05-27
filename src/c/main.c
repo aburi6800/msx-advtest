@@ -149,6 +149,7 @@ void run_scene(int start_scene_id)
                 }
 
                 // グラフィックデータが設定されている場合はデータを展開し表示する
+                // TODO : 画面切り替え時にフェードイン／アウトの処理をする
                 if (scene.graphic_ptn0 != 0) {
                     switch_bank(scene.graphic_bank);
                     unpack(scene.graphic_ptn0, temp);

@@ -4,6 +4,8 @@
 PUBLIC _SC00_PTN_BLK0, _SC00_PTN_BLK1, _SC00_COL_BLK0, _SC00_COL_BLK1
 PUBLIC _SC01_PTN_BLK0, _SC01_PTN_BLK1, _SC01_COL_BLK0, _SC01_COL_BLK1
 PUBLIC _SC02_PTN_BLK0, _SC02_PTN_BLK1, _SC02_COL_BLK0, _SC02_COL_BLK1
+PUBLIC _SC04_PTN_BLK0, _SC04_PTN_BLK1, _SC04_COL_BLK0, _SC04_COL_BLK1
+PUBLIC _SC05_PTN_BLK0, _SC05_PTN_BLK1, _SC05_COL_BLK0, _SC05_COL_BLK1
 
 
 SECTION BANK_01
@@ -36,4 +38,24 @@ _SC02_COL_BLK0:
 INCBIN "../../resources/sc02_col_blk0.plet5"
 _SC02_COL_BLK1:
 INCBIN "../../resources/sc02_col_blk1.plet5"
+
+
+_SC04_PTN_BLK0:
+INCBIN "../../resources/sc04_ptn_blk0.plet5"
+_SC04_PTN_BLK1:
+INCBIN "../../resources/sc04_ptn_blk1.plet5"
+_SC04_COL_BLK0:
+INCBIN "../../resources/sc04_col_blk0.plet5"
+_SC04_COL_BLK1:
+INCBIN "../../resources/sc04_col_blk1.plet5"
+
+
+_SC05_PTN_BLK0:
+INCBIN "../../resources/sc05_ptn_blk0.plet5"
+_SC05_PTN_BLK1:
+INCBIN "../../resources/sc05_ptn_blk1.plet5"
+_SC05_COL_BLK0:
+INCBIN "../../resources/sc05_col_blk0.plet5"
+_SC05_COL_BLK1:
+INCBIN "../../resources/sc05_col_blk1.plet5"
 
