@@ -14,7 +14,7 @@
 
 // 選択肢定義
 typedef struct {
-    const char *command;            // プレイヤーの入力コマンド
+    const char *commands[4];        // プレイヤーの入力コマンド
     uint8_t required_flag;          // この選択肢が表示・実行できる条件(0で条件なし)
     uint8_t flag_to_check;          // メッセージの分岐に使うフラグ(0で分岐なし)
     uint8_t *message_if_unset;      // フラグが未設定のときの表示メッセージ
@@ -57,7 +57,7 @@ Scene scenes[MAX_SCENES] = {
         .message             = message0100,
         .choices = {
             {
-                .command = "LOOK ROOM",
+                .commands = {"LOOK ROOM", NULL},
                 .required_flag       = 0,
                 .flag_to_check       = 0,
                 .message_if_unset    = message0101,
@@ -68,7 +68,7 @@ Scene scenes[MAX_SCENES] = {
                 .next_scene_if_set   = 0
             },
             {
-                .command = "LOOK TABLE",
+                .commands = {"LOOK TABLE", NULL},
                 .required_flag       = 0,
                 .flag_to_check       = FLAG_HAVE_KEY,
                 .message_if_unset    = message0102,
@@ -79,7 +79,7 @@ Scene scenes[MAX_SCENES] = {
                 .next_scene_if_set   = 0
             },
             {
-                .command = "LOOK KEY",
+                .commands = {"LOOK KEY", NULL},
                 .required_flag       = FLAG_FOUND_KEY,
                 .flag_to_check       = 0,
                 .message_if_unset    = message0111,
@@ -90,7 +90,7 @@ Scene scenes[MAX_SCENES] = {
                 .next_scene_if_set   = 0
             },
             {
-                .command = "GET KEY",
+                .commands = {"GET KEY", "TAKE KEY", NULL},
                 .required_flag       = FLAG_FOUND_KEY,
                 .flag_to_check       = FLAG_HAVE_KEY,
                 .message_if_unset    = message0104,
@@ -101,7 +101,7 @@ Scene scenes[MAX_SCENES] = {
                 .next_scene_if_set   = 0
             },
             {
-                .command = "LOOK DOOR",
+                .commands = {"LOOK DOOR", NULL},
                 .required_flag       = 0,
                 .flag_to_check       = FLAG_OPEN_DOOR,
                 .message_if_unset    = message0106,
@@ -112,7 +112,7 @@ Scene scenes[MAX_SCENES] = {
                 .next_scene_if_set   = 0
             },
             {
-                .command = "OPEN DOOR",
+                .commands = {"OPEN DOOR", NULL},
                 .required_flag       = 0,
                 .flag_to_check       = FLAG_HAVE_KEY,
                 .message_if_unset    = message0108,
@@ -123,7 +123,7 @@ Scene scenes[MAX_SCENES] = {
                 .next_scene_if_set = 0
             },
             {
-                .command = "ENTER DOOR",
+                .commands = {"ENTER DOOR", "GO FORWARD", "F", NULL},
                 .required_flag       = FLAG_OPEN_DOOR,
                 .flag_to_check       = 0,
                 .message_if_unset    = message0110,
@@ -134,7 +134,7 @@ Scene scenes[MAX_SCENES] = {
                 .next_scene_if_set   = 0,
             },
             {
-                .command = ""
+                .commands = {NULL}
             }
         }
     },
@@ -153,7 +153,7 @@ Scene scenes[MAX_SCENES] = {
         .message             = message0200,
         .choices = {
             {
-                .command = "LOOK ROOM",
+                .commands = {"LOOK ROOM", NULL},
                 .required_flag       = 0,
                 .flag_to_check       = 0,
                 .message_if_unset    = message0201,
@@ -164,7 +164,7 @@ Scene scenes[MAX_SCENES] = {
                 .next_scene_if_set   = 0,
             },
             {
-                .command = ""
+                .commands = {NULL}
             }
         }
     }

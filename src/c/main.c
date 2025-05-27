@@ -184,46 +184,50 @@ void run_scene(int start_scene_id)
                 choice = &scene.choices[i];
 
                 // 選択肢データのコマンド未設定時はループ終了
-                if (choice->command[0] == '\0') {
+                if (choice->commands[0] == '\0') {
                     break;
                 } 
 
-                // 選択肢データのコマンド＝入力コマンド and
-                // 条件フラグ＝設定なし or 条件フラグの対象＝ON の場合
-                if ((strcmp(choice->command, input_buffer) == 0) &&
-                    ((choice->required_flag == 0) || (game_flags & choice->required_flag))) {
+                // すべてのコマンド候補に対して比較
+                for (int j = 0; choice->commands[j] != NULL; j++) {
 
-                    // コマンド一致フラグON
-                    matched = 1;
+                    // 選択肢データのコマンド＝入力コマンド and
+                    // 条件フラグ＝設定なし or 条件フラグの対象＝ON の場合
+                    if ((strcmp(choice->commands[j], input_buffer) == 0) &&
+                        ((choice->required_flag == 0) || (game_flags & choice->required_flag))) {
 
-                    // 選択肢データのチェック対象フラグ＝設定あり and
-                    // チェック対象フラグ＝ON の場合
-                    if ((choice->flag_to_check) && (game_flags & choice->flag_to_check)) {
-                        // メッセージ表示
-                        put_message(0, 17, choice->message_if_set);
-                        // フラグセット
-                        if (choice->set_flag_if_set) {
-                            game_flags |= choice->set_flag_if_set;
-                        }
-                        // シーン遷移
-                        if (choice->next_scene_if_set) {
-                            scene_id = choice->next_scene_if_set;
+                        // コマンド一致フラグON
+                        matched = 1;
+
+                        // 選択肢データのチェック対象フラグ＝設定あり and
+                        // チェック対象フラグ＝ON の場合
+                        if ((choice->flag_to_check) && (game_flags & choice->flag_to_check)) {
+                            // メッセージ表示
+                            put_message(0, 17, choice->message_if_set);
+                            // フラグセット
+                            if (choice->set_flag_if_set) {
+                                game_flags |= choice->set_flag_if_set;
+                            }
+                            // シーン遷移
+                            if (choice->next_scene_if_set) {
+                                scene_id = choice->next_scene_if_set;
+                            }
+
+                        } else {
+                            // メッセージ表示
+                            put_message(0, 17, choice->message_if_unset);
+                            // フラグセット
+                            if (choice->set_flag_if_unset) {
+                                game_flags |= choice->set_flag_if_unset;
+                            }
+                            // シーン遷移
+                            if (choice->next_scene_if_unset) {
+                                scene_id = choice->next_scene_if_unset;
+                            }
                         }
 
-                    } else {
-                        // メッセージ表示
-                        put_message(0, 17, choice->message_if_unset);
-                        // フラグセット
-                        if (choice->set_flag_if_unset) {
-                            game_flags |= choice->set_flag_if_unset;
-                        }
-                        // シーン遷移
-                        if (choice->next_scene_if_unset) {
-                            scene_id = choice->next_scene_if_unset;
-                        }
+                        break;
                     }
-
-                    break;
                 }
             }
 
