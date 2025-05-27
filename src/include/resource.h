@@ -4,6 +4,11 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
+extern uint8_t SC00_PTN_BLK0[];
+extern uint8_t SC00_PTN_BLK1[];
+extern uint8_t SC00_COL_BLK0[];
+extern uint8_t SC00_COL_BLK1[];
+
 extern uint8_t SC01_PTN_BLK0[];
 extern uint8_t SC01_PTN_BLK1[];
 extern uint8_t SC01_COL_BLK0[];

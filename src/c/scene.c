@@ -43,9 +43,38 @@ typedef struct {
 
 // シーンデータ
 Scene scenes[MAX_SCENES] = {
-    // SCENE 1
+    // TITLE
     {
         .id = 0,
+        .flag_to_check       = 0,
+        .next_scene_if_unset = 0,
+        .next_scene_if_set   = 0,
+        .graphic_bank        = 1,
+        .graphic_ptn0        = SC00_PTN_BLK0,
+        .graphic_ptn1        = SC00_PTN_BLK1,
+        .graphic_col0        = SC00_COL_BLK0,
+        .graphic_col1        = SC00_COL_BLK1,
+        .message             = message0000,
+        .choices = {
+            {
+                .commands = {"START", NULL},
+                .required_flag       = 0,
+                .flag_to_check       = 0,
+                .message_if_unset    = message0001,
+                .set_flag_if_unset   = 0,
+                .next_scene_if_unset = 1,
+                .message_if_set      = "",
+                .set_flag_if_set     = 0,
+                .next_scene_if_set   = 0
+            },
+            {
+                .commands = {NULL}
+            }
+        }
+    },
+    // SCENE 1
+    {
+        .id = 1,
         .flag_to_check       = 0,
         .next_scene_if_unset = 0,
         .next_scene_if_set   = 0,
@@ -128,7 +157,7 @@ Scene scenes[MAX_SCENES] = {
                 .flag_to_check       = 0,
                 .message_if_unset    = message0110,
                 .set_flag_if_unset   = 0,
-                .next_scene_if_unset = 1,
+                .next_scene_if_unset = 2,
                 .message_if_set      = "",
                 .set_flag_if_set     = 0,
                 .next_scene_if_set   = 0,
@@ -141,11 +170,11 @@ Scene scenes[MAX_SCENES] = {
 
     // SCENE 2
     {
-        .id = 1,
+        .id = 2,
         .flag_to_check       = 0,
         .next_scene_if_unset = 0,
         .next_scene_if_set   = 0,
-        .graphic_bank        = 2,
+        .graphic_bank        = 1,
         .graphic_ptn0        = SC02_PTN_BLK0,
         .graphic_ptn1        = SC02_PTN_BLK1,
         .graphic_col0        = SC02_COL_BLK0,

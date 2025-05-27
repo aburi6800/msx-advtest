@@ -267,7 +267,7 @@ void main()
     code = 0;
     for (uint8_t i = 0; i < 8; i++) {
         for (uint8_t j = 0; j < 19; j++) {
-            temp[i * 32 + j] = code++;
+            temp[i * 32 + j + 6] = code++;
         }
     }
     vdp_vwrite(temp, VRAM_PTN_NAME_TBL1, 0x100);
@@ -278,7 +278,7 @@ void main()
     code = 0;
     for (uint8_t i = 0; i < 6; i++) {
         for (uint8_t j = 0; j < 19; j++) {
-            temp[i * 32 + j] = code++;
+            temp[i * 32 + j + 6] = code++;
         }
     }
     vdp_vwrite(temp, VRAM_PTN_NAME_TBL2, 0x100);
