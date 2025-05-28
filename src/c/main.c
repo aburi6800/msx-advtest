@@ -141,13 +141,6 @@ void run_scene(int start_scene_id)
 
             // 通常のシーンの場合
             } else {
-                // 最初のシーン以外は、前シーンの最後のメッセージ表示後にキー入力待ちを行う
-                if (scene_id != 0) {
-                    put_message(0, 23, waitMessage);
-                    keywait();
-                    clear_message();
-                }
-
                 // グラフィックデータが設定されている場合はデータを展開し表示する
                 // TODO : 画面切り替え時にフェードイン／アウトの処理をする
                 if (scene.graphic_ptn0 != 0) {
@@ -204,25 +197,39 @@ void run_scene(int start_scene_id)
                         // チェック対象フラグ＝ON の場合
                         if ((choice->flag_to_check) && (game_flags & choice->flag_to_check)) {
                             // メッセージ表示
-                            put_message(0, 17, choice->message_if_set);
+                            if (choice->message_if_set != '\0') {
+                                put_message(0, 17, choice->message_if_set);
+                            }
                             // フラグセット
                             if (choice->set_flag_if_set) {
                                 game_flags |= choice->set_flag_if_set;
                             }
                             // シーン遷移
                             if (choice->next_scene_if_set) {
+                                if (choice->message_if_set != '\0') {
+                                    put_message(0, 23, waitMessage);
+                                    keywait();
+                                    clear_message();
+                                }
                                 scene_id = choice->next_scene_if_set;
                             }
 
                         } else {
                             // メッセージ表示
-                            put_message(0, 17, choice->message_if_unset);
+                            if (choice->message_if_unset != '\0') {
+                                put_message(0, 17, choice->message_if_unset);
+                            }
                             // フラグセット
                             if (choice->set_flag_if_unset) {
                                 game_flags |= choice->set_flag_if_unset;
                             }
                             // シーン遷移
                             if (choice->next_scene_if_unset) {
+                                if (choice->message_if_unset != '\0') {
+                                    put_message(0, 23, waitMessage);
+                                    keywait();
+                                    clear_message();
+                                }
                                 scene_id = choice->next_scene_if_unset;
                             }
                         }
@@ -286,6 +293,7 @@ void main()
 
 
     while (0 == 0) {
+        // TODO : ゲーム初期化を追加し、ゲームオーバー時にrun_sceneから抜けるようにする
         run_scene(0);
     }
 }
