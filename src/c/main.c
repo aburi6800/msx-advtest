@@ -67,6 +67,7 @@ void input_command(uint8_t _y)
     while(enter_flg == false) {
         // バッファ内容表示
         put_message(sizeof(promptMessage) - 1, _y , input_buffer);
+        put_message(sizeof(promptMessage) + buffer_ix - 1, _y , cursor);
 
         // キーバッファクリア
         msx_clearkey();
@@ -93,7 +94,7 @@ void input_command(uint8_t _y)
         if (key_buffer == 0x08) {
             if (buffer_ix > 0) {
                 buffer_ix--;
-                put_message(sizeof(promptMessage) + buffer_ix - 1, _y, blank);
+                put_message(sizeof(promptMessage) + buffer_ix, _y, blank);
             }
             input_buffer[buffer_ix] = 0x00;
             continue;
@@ -142,7 +143,7 @@ void run_scene(int start_scene_id)
             // 通常のシーンの場合
             } else {
                 // グラフィックデータが設定されている場合はデータを展開し表示する
-                // TODO : 画面切り替え時にフェードイン／アウトの処理をする
+                // TODO : 画面切り替え時に何かしら処理をする
                 if (scene.graphic_ptn0 != 0) {
                     switch_bank(scene.graphic_bank);
                     unpack(scene.graphic_ptn0, temp);
@@ -214,6 +215,7 @@ void run_scene(int start_scene_id)
                                 scene_id = choice->next_scene_if_set;
                             }
 
+                        // 上記以外の場合
                         } else {
                             // メッセージ表示
                             if (choice->message_if_unset != '\0') {
@@ -262,11 +264,11 @@ void main()
     // C-BIOSでは初期値1のため、明示的に設定
     *(uint8_t *)MSX_REPCNT = 50;
 
-    // フォントパターンをバンク0～3のパターンジェネレータテーブル／カラーテーブルに設定
+    // フォントパターンをブロック3のパターンジェネレータテーブル／カラーテーブルに設定
     vdp_vwrite(FONT_PTN_TBL, VRAM_PTN_GENR_TBL3, 0x0800);
     vdp_vwrite(FONT_COL_TBL, VRAM_COLOR_TBL3, 0x0800);
 
-    // バンク1～2のパターンネームテーブル設定
+    // パターンネームテーブル(ブロック1)の設定
     uint8_t code = 0;
 
     for (uint16_t i = 0; i < 256; i++) {
@@ -280,6 +282,7 @@ void main()
     }
     vdp_vwrite(temp, VRAM_PTN_NAME_TBL1, 0x100);
 
+    // パターンネームテーブル(ブロック2)の設定
     for (uint16_t i = 0; i < 256; i++) {
         temp[i] = 254;
     }
