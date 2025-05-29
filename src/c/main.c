@@ -120,24 +120,42 @@ void input_command(uint8_t _y)
 }
 
 
-// シーンの実行処理
-void run_scene(int start_scene_id)
+// シーン列挙型からシーンの配列インデックスを取得
+uint8_t getSceneIdx(SceneId sceneId)
 {
-    uint8_t scene_id = start_scene_id;
-    uint8_t previous_scene_id = 0xff;
+    uint8_t idx = 0;
 
-    while (scene_id >= 0) {
+    for (uint8_t i = 0; i < MAX_SCENES; i++) {
+        if (scenes[i].sceneId == sceneId) {
+            idx = i;
+            break;
+        }
+    }
 
-        if (scene_id != previous_scene_id) {
+    return idx;
+}
 
-            scene = scenes[scene_id];
+
+// シーンの実行処理
+void run_scene(SceneId start_scene_id)
+{
+    uint8_t scene_idx = getSceneIdx(start_scene_id);
+    uint8_t previous_scene_idx = 0xff;
+
+    while (scene_idx >= 0) {
+
+        if (scene_idx != previous_scene_idx) {
+
+            scene = scenes[scene_idx];
 
             // シーン分岐のみ行う場合
             if (scene.flag_to_check) {
                 if (game_flags & scene.flag_to_check) {
-                    scene_id = scene.next_scene_if_set;
+//                    scene_id = scene.next_scene_if_set;
+                    scene_idx = getSceneIdx(scene.next_sceneId_if_set);
                 } else {
-                    scene_id = scene.next_scene_if_unset;
+//                    scene_id = scene.next_scene_if_unset;
+                    scene_idx = getSceneIdx(scene.next_sceneId_if_unset);
                 }
 
             // 通常のシーンの場合
@@ -160,7 +178,7 @@ void run_scene(int start_scene_id)
                 put_message(0, 17, scene.message);
 
                 // 直前のシーンIDを現在のシーンIDに置き換える
-                previous_scene_id = scene_id;
+                previous_scene_idx = scene_idx;
             }
 
         } else {
@@ -206,13 +224,14 @@ void run_scene(int start_scene_id)
                                 game_flags |= choice->set_flag_if_set;
                             }
                             // シーン遷移
-                            if (choice->next_scene_if_set) {
+                            if (choice->next_sceneId_if_set) {
                                 if (choice->message_if_set != '\0') {
                                     put_message(0, 23, waitMessage);
                                     keywait();
                                     clear_message();
                                 }
-                                scene_id = choice->next_scene_if_set;
+//                                scene_id = choice->next_scene_if_set;
+                                scene_idx = getSceneIdx(choice->next_sceneId_if_set);
                             }
 
                         // 上記以外の場合
@@ -226,13 +245,14 @@ void run_scene(int start_scene_id)
                                 game_flags |= choice->set_flag_if_unset;
                             }
                             // シーン遷移
-                            if (choice->next_scene_if_unset) {
+                            if (choice->next_sceneId_if_unset) {
                                 if (choice->message_if_unset != '\0') {
                                     put_message(0, 23, waitMessage);
                                     keywait();
                                     clear_message();
                                 }
-                                scene_id = choice->next_scene_if_unset;
+//                                scene_id = choice->next_scene_if_unset;
+                                scene_idx = getSceneIdx(choice->next_sceneId_if_unset);
                             }
                         }
 
@@ -264,7 +284,14 @@ void main()
     // C-BIOSでは初期値1のため、明示的に設定
     *(uint8_t *)MSX_REPCNT = 50;
 
-    // フォントパターンをブロック3のパターンジェネレータテーブル／カラーテーブルに設定
+    // ブロック1/2のパターンジェネレータテーブル設定（ブランク）
+    for (uint16_t i = 0; i < 2048; i++) {
+        temp[i] = 0x00;
+    }
+    vdp_vwrite(temp, VRAM_PTN_GENR_TBL1, 0x0800);
+    vdp_vwrite(temp, VRAM_PTN_GENR_TBL2, 0x0800);
+
+    // ブロック3のパターンジェネレータテーブル／カラーテーブル設定（フォントパターン）
     vdp_vwrite(FONT_PTN_TBL, VRAM_PTN_GENR_TBL3, 0x0800);
     vdp_vwrite(FONT_COL_TBL, VRAM_COLOR_TBL3, 0x0800);
 
@@ -297,6 +324,6 @@ void main()
 
     while (0 == 0) {
         // TODO : ゲーム初期化を追加し、ゲームオーバー時にrun_sceneから抜けるようにする
-        run_scene(0);
+        run_scene(TITLE);
     }
 }
