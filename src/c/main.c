@@ -31,7 +31,7 @@ uint8_t input_buffer[32 - 9];
 uint8_t key_buffer;
 
 // フラグ管理（ビット演算で扱う）
-uint8_t game_flags = 0;
+uint16_t game_flags = 0;
 
 // コマンド一致フラグ
 uint8_t matched = 0;
@@ -292,6 +292,7 @@ void main()
     vdp_vwrite(temp, VRAM_PTN_GENR_TBL2, 0x0800);
 
     // ブロック3のパターンジェネレータテーブル／カラーテーブル設定（フォントパターン）
+    switch_bank(1);
     vdp_vwrite(FONT_PTN_TBL, VRAM_PTN_GENR_TBL3, 0x0800);
     vdp_vwrite(FONT_COL_TBL, VRAM_COLOR_TBL3, 0x0800);
 
