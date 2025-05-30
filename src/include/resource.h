@@ -4,29 +4,39 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
-extern uint8_t SC00_PTN_BLK0[];
-extern uint8_t SC00_PTN_BLK1[];
-extern uint8_t SC00_COL_BLK0[];
-extern uint8_t SC00_COL_BLK1[];
+extern uint8_t TITLE_PTN_BLK0[];
+extern uint8_t TITLE_PTN_BLK1[];
+extern uint8_t TITLE_COL_BLK0[];
+extern uint8_t TITLE_COL_BLK1[];
 
-extern uint8_t SC01_PTN_BLK0[];
-extern uint8_t SC01_PTN_BLK1[];
-extern uint8_t SC01_COL_BLK0[];
-extern uint8_t SC01_COL_BLK1[];
+extern uint8_t SC010_PTN_BLK0[];
+extern uint8_t SC010_PTN_BLK1[];
+extern uint8_t SC010_COL_BLK0[];
+extern uint8_t SC010_COL_BLK1[];
 
-extern uint8_t SC02_PTN_BLK0[];
-extern uint8_t SC02_PTN_BLK1[];
-extern uint8_t SC02_COL_BLK0[];
-extern uint8_t SC02_COL_BLK1[];
+extern uint8_t SC020_PTN_BLK0[];
+extern uint8_t SC020_PTN_BLK1[];
+extern uint8_t SC020_COL_BLK0[];
+extern uint8_t SC020_COL_BLK1[];
 
-extern uint8_t SC04_PTN_BLK0[];
-extern uint8_t SC04_PTN_BLK1[];
-extern uint8_t SC04_COL_BLK0[];
-extern uint8_t SC04_COL_BLK1[];
+extern uint8_t SC031_PTN_BLK0[];
+extern uint8_t SC031_PTN_BLK1[];
+extern uint8_t SC031_COL_BLK0[];
+extern uint8_t SC031_COL_BLK1[];
 
-extern uint8_t SC05_PTN_BLK0[];
-extern uint8_t SC05_PTN_BLK1[];
-extern uint8_t SC05_COL_BLK0[];
-extern uint8_t SC05_COL_BLK1[];
+extern uint8_t SC032_PTN_BLK0[];
+extern uint8_t SC032_PTN_BLK1[];
+extern uint8_t SC032_COL_BLK0[];
+extern uint8_t SC032_COL_BLK1[];
+
+extern uint8_t SC041_PTN_BLK0[];
+extern uint8_t SC041_PTN_BLK1[];
+extern uint8_t SC041_COL_BLK0[];
+extern uint8_t SC041_COL_BLK1[];
+
+extern uint8_t SC042_PTN_BLK0[];
+extern uint8_t SC042_PTN_BLK1[];
+extern uint8_t SC042_COL_BLK0[];
+extern uint8_t SC042_COL_BLK1[];
 
 #endif

@@ -1,6 +1,7 @@
 // License:MIT License
 // copyright-holders:aburi6800 (Hitoshi Iwai)
 
+#include "../include/resource.h"
 #include "./message.c"
 #include "./flag.c"
 
@@ -36,8 +37,8 @@ typedef enum {
 
 // 選択肢定義
 typedef struct {
-    const char *commands[5];        // プレイヤーの入力コマンド
     uint8_t required_flag;          // この選択肢が表示・実行できる条件(0で条件なし)
+    const char *commands[5];        // プレイヤーの入力コマンド
     uint8_t flag_to_check;          // メッセージの分岐に使うフラグ(0で分岐なし)
     uint8_t *message_if_unset;      // フラグが未設定のときの表示メッセージ
     uint8_t set_flag_if_unset;      // 実行後にセットするフラグ(フラグ未設定時)
@@ -72,17 +73,17 @@ Scene scenes[MAX_SCENES] = {
         .next_sceneId_if_unset  = NOSCENE,
         .next_sceneId_if_set    = NOSCENE,
         .graphic_bank           = 1,
-        .graphic_ptn0           = SC00_PTN_BLK0,
-        .graphic_ptn1           = SC00_PTN_BLK1,
-        .graphic_col0           = SC00_COL_BLK0,
-        .graphic_col1           = SC00_COL_BLK1,
-        .message                = message0000,
+        .graphic_ptn0           = TITLE_PTN_BLK0,
+        .graphic_ptn1           = TITLE_PTN_BLK1,
+        .graphic_col0           = TITLE_COL_BLK0,
+        .graphic_col1           = TITLE_COL_BLK1,
+        .message                = message00000,
         .choices = {
             {
-                .commands               = {"START", NULL},
                 .required_flag          = 0,
+                .commands               = {"START", NULL},
                 .flag_to_check          = 0,
-                .message_if_unset       = message0001,
+                .message_if_unset       = message00001,
                 .set_flag_if_unset      = 0,
                 .next_sceneId_if_unset  = SCENE01,
                 .message_if_set         = NULL,
@@ -102,15 +103,15 @@ Scene scenes[MAX_SCENES] = {
         .next_sceneId_if_unset  = NOSCENE,
         .next_sceneId_if_set    = NOSCENE,
         .graphic_bank               = 1,
-        .graphic_ptn0               = SC01_PTN_BLK0,
-        .graphic_ptn1               = SC01_PTN_BLK1,
-        .graphic_col0               = SC01_COL_BLK0,
-        .graphic_col1               = SC01_COL_BLK1,
+        .graphic_ptn0               = SC010_PTN_BLK0,
+        .graphic_ptn1               = SC010_PTN_BLK1,
+        .graphic_col0               = SC010_COL_BLK0,
+        .graphic_col1               = SC010_COL_BLK1,
         .message                    = message01000,
         .choices = {
             {
-                .commands               = {"LOOK ROOM", NULL},
                 .required_flag          = 0,
+                .commands               = {"LOOK ROOM", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = message01001,
                 .set_flag_if_unset      = 0,
@@ -120,8 +121,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE
             },
             {
-                .commands               = {"LOOK TABLE", NULL},
                 .required_flag          = 0,
+                .commands               = {"LOOK TABLE", NULL},
                 .flag_to_check          = FLAG_HAVE_KEY,
                 .message_if_unset       = message01002,
                 .set_flag_if_unset      = FLAG_FOUND_KEY,
@@ -131,8 +132,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE
             },
             {
-                .commands               = {"LOOK KEY", NULL},
                 .required_flag          = FLAG_FOUND_KEY,
+                .commands               = {"LOOK KEY", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = message01011,
                 .set_flag_if_unset      = 0,
@@ -142,8 +143,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE
             },
             {
-                .commands               = {"GET KEY", "TAKE KEY", NULL},
                 .required_flag          = FLAG_FOUND_KEY,
+                .commands               = {"GET KEY", "TAKE KEY", NULL},
                 .flag_to_check          = FLAG_HAVE_KEY,
                 .message_if_unset       = message01004,
                 .set_flag_if_unset      = FLAG_HAVE_KEY,
@@ -153,8 +154,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE
             },
             {
-                .commands               = {"LOOK DOOR", NULL},
                 .required_flag          = 0,
+                .commands               = {"LOOK DOOR", NULL},
                 .flag_to_check          = FLAG_OPEN_DOOR,
                 .message_if_unset       = message01006,
                 .set_flag_if_unset      = 0,
@@ -164,8 +165,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE
             },
             {
-                .commands               = {"OPEN DOOR", NULL},
                 .required_flag          = 0,
+                .commands               = {"OPEN DOOR", NULL},
                 .flag_to_check          = FLAG_HAVE_KEY,
                 .message_if_unset       = message01008,
                 .set_flag_if_unset      = 0,
@@ -175,8 +176,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE
             },
             {
-                .commands               = {"ENTER DOOR", "GO FORWARD", "F", NULL},
                 .required_flag          = FLAG_OPEN_DOOR,
+                .commands               = {"ENTER DOOR", "GO FORWARD", "FORWARD", "F", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = message01010,
                 .set_flag_if_unset      = 0,
@@ -198,15 +199,15 @@ Scene scenes[MAX_SCENES] = {
         .next_sceneId_if_unset  = NOSCENE,
         .next_sceneId_if_set    = NOSCENE,
         .graphic_bank           = 1,
-        .graphic_ptn0           = SC02_PTN_BLK0,
-        .graphic_ptn1           = SC02_PTN_BLK1,
-        .graphic_col0           = SC02_COL_BLK0,
-        .graphic_col1           = SC02_COL_BLK1,
+        .graphic_ptn0           = SC020_PTN_BLK0,
+        .graphic_ptn1           = SC020_PTN_BLK1,
+        .graphic_col0           = SC020_COL_BLK0,
+        .graphic_col1           = SC020_COL_BLK1,
         .message                = message02000,
         .choices = {
             {
-                .commands               = {"GO BACK", "BACK", "B", NULL},
                 .required_flag          = 0,
+                .commands               = {"GO BACK", "BACK", "B", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = NULL,
                 .set_flag_if_unset      = 0,
@@ -216,23 +217,34 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands               = {"LOOK ROOM", NULL},
                 .required_flag          = 0,
+                .commands               = {"GO RIGHT", "RIGHT", "R", NULL},
                 .flag_to_check          = 0,
-                .message_if_unset       = message02001,
+                .message_if_unset       = NULL,
                 .set_flag_if_unset      = 0,
-                .next_sceneId_if_unset  = NOSCENE,
+                .next_sceneId_if_unset  = SCENE03,
                 .message_if_set         = NULL,
                 .set_flag_if_set        = 0,
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands               = {"GO RIGHT", "RIGHT", "R", NULL},
                 .required_flag          = 0,
+                .commands               = {"GO FORWARD", "FORWARD", "F", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = NULL,
                 .set_flag_if_unset      = 0,
-                .next_sceneId_if_unset  = SCENE03,
+                .next_sceneId_if_unset  = SCENE04,
+                .message_if_set         = NULL,
+                .set_flag_if_set        = 0,
+                .next_sceneId_if_set    = NOSCENE,
+            },
+            {
+                .required_flag          = 0,
+                .commands               = {"LOOK ROOM", NULL},
+                .flag_to_check          = 0,
+                .message_if_unset       = message02001,
+                .set_flag_if_unset      = 0,
+                .next_sceneId_if_unset  = NOSCENE,
                 .message_if_set         = NULL,
                 .set_flag_if_set        = 0,
                 .next_sceneId_if_set    = NOSCENE,
@@ -269,15 +281,15 @@ Scene scenes[MAX_SCENES] = {
         .next_sceneId_if_unset  = NULL,
         .next_sceneId_if_set    = NULL,
         .graphic_bank           = 1,
-        .graphic_ptn0           = SC04_PTN_BLK0,
-        .graphic_ptn1           = SC04_PTN_BLK1,
-        .graphic_col0           = SC04_COL_BLK0,
-        .graphic_col1           = SC04_COL_BLK1,
+        .graphic_ptn0           = SC031_PTN_BLK0,
+        .graphic_ptn1           = SC031_PTN_BLK1,
+        .graphic_col0           = SC031_COL_BLK0,
+        .graphic_col1           = SC031_COL_BLK1,
         .message                = message03100,
         .choices = {
             {
-                .commands               = {"GO BACK", "BACK", "B", NULL},
                 .required_flag          = 0,
+                .commands               = {"GO BACK", "BACK", "B", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = NULL,
                 .set_flag_if_unset      = 0,
@@ -287,8 +299,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands               = {"LOOK TREE", "LOOK ROOM", NULL},
                 .required_flag          = 0,
+                .commands               = {"LOOK TREE", "LOOK ROOM", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = message03101,
                 .set_flag_if_unset      = 0,
@@ -298,8 +310,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands               = {"CLIMB TREE", "GO UP", "UP", "U", NULL},
                 .required_flag          = 0,
+                .commands               = {"CLIMB TREE", "GO UP", "UP", "U", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = message03102,
                 .set_flag_if_unset      = 0,
@@ -309,8 +321,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands               = {"KICK TREE", "SWING TREE", NULL},
                 .required_flag          = 0,
+                .commands               = {"KICK TREE", "SWING TREE", NULL},
                 .flag_to_check          = FLAG_HAVE_APPLE,
                 .message_if_unset       = message03103,
                 .set_flag_if_unset      = FLAG_FAIL_APPLE,
@@ -320,8 +332,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands               = {"EAT APPLE", NULL},
                 .required_flag          = FLAG_HAVE_APPLE,
+                .commands               = {"EAT APPLE", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = message03105,
                 .set_flag_if_unset      = 0,
@@ -343,15 +355,15 @@ Scene scenes[MAX_SCENES] = {
         .next_sceneId_if_unset  = NOSCENE,
         .next_sceneId_if_set    = NOSCENE,
         .graphic_bank           = 1,
-        .graphic_ptn0           = SC05_PTN_BLK0,
-        .graphic_ptn1           = SC05_PTN_BLK1,
-        .graphic_col0           = SC05_COL_BLK0,
-        .graphic_col1           = SC05_COL_BLK1,
+        .graphic_ptn0           = SC032_PTN_BLK0,
+        .graphic_ptn1           = SC032_PTN_BLK1,
+        .graphic_col0           = SC032_COL_BLK0,
+        .graphic_col1           = SC032_COL_BLK1,
         .message                = message03200,
         .choices = {
             {
-                .commands               = {"GO BACK", "BACK", "B", NULL},
                 .required_flag          = 0,
+                .commands               = {"GO BACK", "BACK", "B", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = NULL,
                 .set_flag_if_unset      = 0,
@@ -361,8 +373,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NULL,
             },
             {
-                .commands               = {"LOOK TREE", "LOOK ROOM", NULL},
                 .required_flag          = 0,
+                .commands               = {"LOOK TREE", "LOOK ROOM", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = message03201,
                 .set_flag_if_unset      = 0,
@@ -372,8 +384,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands               = {"CLIMB TREE", "GO UP", "UP", "U", NULL},
                 .required_flag          = 0,
+                .commands               = {"CLIMB TREE", "GO UP", "UP", "U", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = message03202,
                 .set_flag_if_unset      = 0,
@@ -383,8 +395,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands               = {"KICK TREE", "SWING TREE", NULL},
                 .required_flag          = 0,
+                .commands               = {"KICK TREE", "SWING TREE", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = message03204,
                 .set_flag_if_unset      = 0,
@@ -394,8 +406,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands               = {"LOOK APPLE", NULL},
                 .required_flag          = 0,
+                .commands               = {"LOOK APPLE", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = message03202,
                 .set_flag_if_unset      = 0,
@@ -405,8 +417,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands               = {"GET APPLE", "TAKE APPLE", NULL},
                 .required_flag          = 0,
+                .commands               = {"GET APPLE", "TAKE APPLE", NULL},
                 .flag_to_check          = FLAG_HAVE_APPLE,
                 .message_if_unset       = message03203,
                 .set_flag_if_unset      = FLAG_HAVE_APPLE,
@@ -416,8 +428,8 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands               = {"EAT APPLE", NULL},
                 .required_flag          = 0,
+                .commands               = {"EAT APPLE", NULL},
                 .flag_to_check          = 0,
                 .message_if_unset       = message03205,
                 .set_flag_if_unset      = 0,
@@ -428,6 +440,151 @@ Scene scenes[MAX_SCENES] = {
             },
             {
                 .commands               = {NULL}
+            }
+        }
+    },
+
+    // SCENE 4
+    {
+        .sceneId                = SCENE04,
+        .flag_to_check          = FLAG_SNAKE_KILL,
+        .next_sceneId_if_unset  = SCENE04_1,
+        .next_sceneId_if_set    = SCENE04_2,
+        .graphic_bank           = 0,
+        .graphic_ptn0           = NULL,
+        .graphic_ptn1           = NULL,
+        .graphic_col0           = NULL,
+        .graphic_col1           = NULL,
+        .message                = NULL,
+        .choices = {
+            {
+                .commands               = {NULL}
+            }
+        }
+    },
+
+    // SCENE 4-1
+    {
+        .sceneId                = SCENE04_1,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NULL,
+        .next_sceneId_if_set    = NULL,
+        .graphic_bank           = 2,
+        .graphic_ptn0           = SC041_PTN_BLK0,
+        .graphic_ptn1           = SC041_PTN_BLK1,
+        .graphic_col0           = SC041_COL_BLK0,
+        .graphic_col1           = SC041_COL_BLK1,
+        .message                = message04100,
+        .choices = {
+            {
+                .required_flag          = 0,
+                .commands               = {"GO BACK", "BACK", "B", NULL},
+                .flag_to_check          = 0,
+                .message_if_unset       = NULL,
+                .set_flag_if_unset      = 0,
+                .next_sceneId_if_unset  = SCENE02,
+                .message_if_set         = NULL,
+                .set_flag_if_set        = 0,
+                .next_sceneId_if_set    = NOSCENE,
+            },
+            {
+                .required_flag          = 0,
+                .commands               = {"GO FORWARD", "FORWARD", "F", NULL},
+                .flag_to_check          = 0,
+                .message_if_unset       = message04101,
+                .set_flag_if_unset      = 0,
+                .next_sceneId_if_unset  = NOSCENE,
+                .message_if_set         = NULL,
+                .set_flag_if_set        = 0,
+                .next_sceneId_if_set    = NOSCENE,
+            },
+            {
+                .required_flag          = 0,
+                .commands               = {"LOOK SNAKE", NULL},
+                .flag_to_check          = FLAG_SNAKE_LOOK,
+                .message_if_unset       = message04102,
+                .set_flag_if_unset      = FLAG_SNAKE_LOOK,
+                .next_sceneId_if_unset  = NOSCENE,
+                .message_if_set         = message04101,
+                .set_flag_if_set        = 0,
+                .next_sceneId_if_set    = NOSCENE,
+            },
+            {
+                .required_flag          = FLAG_HAVE_APPLE,
+                .commands               = {"THROW APPLE", NULL},
+                .flag_to_check          = 0,
+                .message_if_unset       = message04103,
+                .set_flag_if_unset      = FLAG_SNAKE_KILL,
+                .next_sceneId_if_unset  = SCENE04,
+                .message_if_set         = NULL,
+                .set_flag_if_set        = 0,
+                .next_sceneId_if_set    = SCENE04,
+            },
+            {
+                .commands = {NULL}
+            }
+        }
+    },
+
+    // SCENE 4-2
+    {
+        .sceneId                = SCENE04_2,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NULL,
+        .next_sceneId_if_set    = NULL,
+        .graphic_bank           = 2,
+        .graphic_ptn0           = SC042_PTN_BLK0,
+        .graphic_ptn1           = SC042_PTN_BLK1,
+        .graphic_col0           = SC042_COL_BLK0,
+        .graphic_col1           = SC042_COL_BLK1,
+        .message                = message04200,
+        .choices = {
+            {
+                .required_flag          = 0,
+                .commands               = {"GO BACK", "BACK", "B", NULL},
+                .flag_to_check          = 0,
+                .message_if_unset       = NULL,
+                .set_flag_if_unset      = 0,
+                .next_sceneId_if_unset  = SCENE02,
+                .message_if_set         = NULL,
+                .set_flag_if_set        = 0,
+                .next_sceneId_if_set    = NOSCENE,
+            },
+            {
+                .required_flag          = 0,
+                .commands               = {"GO FORWARD", "FORWARD", "F", NULL},
+                .flag_to_check          = 0,
+                .message_if_unset       = NULL,
+                .set_flag_if_unset      = 0,
+                .next_sceneId_if_unset  = SCENE05,
+                .message_if_set         = NULL,
+                .set_flag_if_set        = 0,
+                .next_sceneId_if_set    = NOSCENE,
+            },
+            {
+                .required_flag          = 0,
+                .commands               = {"LOOK SNAKE", "LOOK BORN", NULL},
+                .flag_to_check          = 0,
+                .message_if_unset       = message04201,
+                .set_flag_if_unset      = 0,
+                .next_sceneId_if_unset  = NOSCENE,
+                .message_if_set         = NULL,
+                .set_flag_if_set        = 0,
+                .next_sceneId_if_set    = NOSCENE,
+            },
+            {
+                .required_flag          = 0,
+                .commands               = {"GET BORN", "TAKE BORN", NULL},
+                .flag_to_check          = 0,
+                .message_if_unset       = message04202,
+                .set_flag_if_unset      = 0,
+                .next_sceneId_if_unset  = NOSCENE,
+                .message_if_set         = NULL,
+                .set_flag_if_set        = 0,
+                .next_sceneId_if_set    = SCENE04,
+            },
+            {
+                .commands = {NULL}
             }
         }
     }
