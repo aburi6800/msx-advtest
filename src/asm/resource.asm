@@ -14,6 +14,9 @@ PUBLIC _SC042_PTN_BLK0, _SC042_PTN_BLK1, _SC042_COL_BLK0, _SC042_COL_BLK1
 PUBLIC _SC051_PTN_BLK0, _SC051_PTN_BLK1, _SC051_COL_BLK0, _SC051_COL_BLK1
 PUBLIC _SC052_PTN_BLK0, _SC052_PTN_BLK1, _SC052_COL_BLK0, _SC052_COL_BLK1
 PUBLIC _SC053_PTN_BLK0, _SC053_PTN_BLK1, _SC053_COL_BLK0, _SC053_COL_BLK1
+PUBLIC _SC061_PTN_BLK0, _SC061_PTN_BLK1, _SC061_COL_BLK0, _SC061_COL_BLK1
+PUBLIC _SC062_PTN_BLK0, _SC062_PTN_BLK1, _SC062_COL_BLK0, _SC062_COL_BLK1
+PUBLIC _SC070_PTN_BLK0, _SC070_PTN_BLK1, _SC070_COL_BLK0, _SC070_COL_BLK1
 
 SECTION BANK_01
 
@@ -122,3 +125,29 @@ INCBIN "../../resources/bank03/sc053_col_blk0.plet5"
 _SC053_COL_BLK1:
 INCBIN "../../resources/bank03/sc053_col_blk1.plet5"
 
+_SC061_PTN_BLK0:
+INCBIN "../../resources/bank03/sc061_ptn_blk0.plet5"
+_SC061_PTN_BLK1:
+INCBIN "../../resources/bank03/sc061_ptn_blk1.plet5"
+_SC061_COL_BLK0:
+INCBIN "../../resources/bank03/sc061_col_blk0.plet5"
+_SC061_COL_BLK1:
+INCBIN "../../resources/bank03/sc061_col_blk1.plet5"
+
+_SC062_PTN_BLK0:
+INCBIN "../../resources/bank03/sc062_ptn_blk0.plet5"
+_SC062_PTN_BLK1:
+INCBIN "../../resources/bank03/sc062_ptn_blk1.plet5"
+_SC062_COL_BLK0:
+INCBIN "../../resources/bank03/sc062_col_blk0.plet5"
+_SC062_COL_BLK1:
+INCBIN "../../resources/bank03/sc062_col_blk1.plet5"
+
+_SC070_PTN_BLK0:
+INCBIN "../../resources/bank03/sc070_ptn_blk0.plet5"
+_SC070_PTN_BLK1:
+INCBIN "../../resources/bank03/sc070_ptn_blk1.plet5"
+_SC070_COL_BLK0:
+INCBIN "../../resources/bank03/sc070_col_blk0.plet5"
+_SC070_COL_BLK1:
+INCBIN "../../resources/bank03/sc070_col_blk1.plet5"

@@ -2,6 +2,7 @@
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
         "*.asm": "asm-collection",
-        "system_error": "c"
+        "system_error": "c",
+        "sstream": "c"
     }
 }

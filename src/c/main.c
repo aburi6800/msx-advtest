@@ -141,8 +141,10 @@ void run_scene(SceneId start_scene_id)
 {
     uint8_t scene_idx = getSceneIdx(start_scene_id);
     uint8_t previous_scene_idx = 0xff;
+    bool_t end_flg = false;
 
-    while (scene_idx >= 0) {
+//    while (scene_idx >= 0) {
+    while (!end_flg) {
 
         if (scene_idx != previous_scene_idx) {
 
@@ -183,6 +185,14 @@ void run_scene(SceneId start_scene_id)
 
                 // メッセージを表示
                 put_message(0, 17, scene.message);
+
+                if (scene.sceneId == OVER) {
+                    // ゲームオーバーの場合、キー入力を待ち、処理を終了する
+                    put_message((31 - sizeof(waitMessage)), 23, waitMessage);
+                    keywait();
+                    clear_message();
+                    end_flg = true;
+                }
 
                 if (scene.next_sceneId_if_unset != NOSCENE) {
                     // 次シーンの設定のみが行われている場合、キー入力を待ち、シーンを変更する
@@ -335,7 +345,10 @@ void main()
 
 
     while (0 == 0) {
-        // TODO : ゲーム初期化を追加し、ゲームオーバー時にrun_sceneから抜けるようにする
+        // フラグ初期化
+        game_flags = 0;
+
+        // ゲームスタート
         run_scene(TITLE);
     }
 }

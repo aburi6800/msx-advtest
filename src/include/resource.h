@@ -59,4 +59,19 @@ extern uint8_t SC053_PTN_BLK1[];
 extern uint8_t SC053_COL_BLK0[];
 extern uint8_t SC053_COL_BLK1[];
 
+extern uint8_t SC061_PTN_BLK0[];
+extern uint8_t SC061_PTN_BLK1[];
+extern uint8_t SC061_COL_BLK0[];
+extern uint8_t SC061_COL_BLK1[];
+
+extern uint8_t SC062_PTN_BLK0[];
+extern uint8_t SC062_PTN_BLK1[];
+extern uint8_t SC062_COL_BLK0[];
+extern uint8_t SC062_COL_BLK1[];
+
+extern uint8_t SC070_PTN_BLK0[];
+extern uint8_t SC070_PTN_BLK1[];
+extern uint8_t SC070_COL_BLK0[];
+extern uint8_t SC070_COL_BLK1[];
+
 #endif
