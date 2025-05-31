@@ -74,7 +74,7 @@ Scene scenes[MAX_SCENES] = {
         .flag_to_check          = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .next_sceneId_if_set    = NOSCENE,
-        .graphic_bank           = 2,
+        .graphic_bank           = 1,
         .graphic_ptn0           = TITLE_PTN_BLK0,
         .graphic_ptn1           = TITLE_PTN_BLK1,
         .graphic_col0           = TITLE_COL_BLK0,
@@ -92,6 +92,25 @@ Scene scenes[MAX_SCENES] = {
                 .set_flag_if_set        = 0,
                 .next_sceneId_if_set    = NOSCENE
             },
+            {
+                .commands               = {NULL}
+            }
+        }
+    },
+
+    // GAME OVER
+    {
+        .sceneId                = OVER,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = TITLE,
+        .next_sceneId_if_set    = NOSCENE,
+        .graphic_bank           = 1,
+        .graphic_ptn0           = OVER_PTN_BLK0,
+        .graphic_ptn1           = OVER_PTN_BLK1,
+        .graphic_col0           = OVER_COL_BLK0,
+        .graphic_col1           = OVER_COL_BLK1,
+        .message                = message99000,
+        .choices = {
             {
                 .commands               = {NULL}
             }
@@ -317,7 +336,7 @@ Scene scenes[MAX_SCENES] = {
                 .flag_to_check          = 0,
                 .message_if_unset       = message03102,
                 .set_flag_if_unset      = 0,
-                .next_sceneId_if_unset  = NOSCENE,
+                .next_sceneId_if_unset  = OVER,
                 .message_if_set         = NULL,
                 .set_flag_if_set        = 0,
                 .next_sceneId_if_set    = NOSCENE,
@@ -339,7 +358,7 @@ Scene scenes[MAX_SCENES] = {
                 .flag_to_check          = 0,
                 .message_if_unset       = message03105,
                 .set_flag_if_unset      = 0,
-                .next_sceneId_if_unset  = NOSCENE,
+                .next_sceneId_if_unset  = OVER,
                 .message_if_set         = NULL,
                 .set_flag_if_set        = 0,
                 .next_sceneId_if_set    = NOSCENE,
@@ -402,7 +421,7 @@ Scene scenes[MAX_SCENES] = {
                 .flag_to_check          = 0,
                 .message_if_unset       = message03202,
                 .set_flag_if_unset      = 0,
-                .next_sceneId_if_unset  = NOSCENE,
+                .next_sceneId_if_unset  = OVER,
                 .message_if_set         = NULL,
                 .set_flag_if_set        = 0,
                 .next_sceneId_if_set    = NOSCENE,
@@ -446,7 +465,7 @@ Scene scenes[MAX_SCENES] = {
                 .flag_to_check          = 0,
                 .message_if_unset       = message03205,
                 .set_flag_if_unset      = 0,
-                .next_sceneId_if_unset  = NOSCENE,
+                .next_sceneId_if_unset  = OVER,
                 .message_if_set         = NULL,
                 .set_flag_if_set        = 0,
                 .next_sceneId_if_set    = NOSCENE,
@@ -482,7 +501,7 @@ Scene scenes[MAX_SCENES] = {
         .flag_to_check          = 0,
         .next_sceneId_if_unset  = NULL,
         .next_sceneId_if_set    = NULL,
-        .graphic_bank           = 3,
+        .graphic_bank           = 2,
         .graphic_ptn0           = SC041_PTN_BLK0,
         .graphic_ptn1           = SC041_PTN_BLK1,
         .graphic_col0           = SC041_COL_BLK0,
@@ -506,7 +525,7 @@ Scene scenes[MAX_SCENES] = {
                 .flag_to_check          = 0,
                 .message_if_unset       = message04101,
                 .set_flag_if_unset      = 0,
-                .next_sceneId_if_unset  = NOSCENE,
+                .next_sceneId_if_unset  = OVER,
                 .message_if_set         = NULL,
                 .set_flag_if_set        = 0,
                 .next_sceneId_if_set    = NOSCENE,
@@ -520,7 +539,7 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_unset  = NOSCENE,
                 .message_if_set         = message04101,
                 .set_flag_if_set        = 0,
-                .next_sceneId_if_set    = NOSCENE,
+                .next_sceneId_if_set    = OVER,
             },
             {
                 .required_flag          = FLAG_HAVE_APPLE,
@@ -534,6 +553,17 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = SCENE04,
             },
             {
+                .required_flag          = 0,
+                .commands               = {"EAT APPLE", NULL},
+                .flag_to_check          = 0,
+                .message_if_unset       = message03205,
+                .set_flag_if_unset      = 0,
+                .next_sceneId_if_unset  = OVER,
+                .message_if_set         = NULL,
+                .set_flag_if_set        = 0,
+                .next_sceneId_if_set    = NOSCENE,
+            },
+            {
                 .commands = {NULL}
             }
         }
@@ -545,7 +575,7 @@ Scene scenes[MAX_SCENES] = {
         .flag_to_check          = 0,
         .next_sceneId_if_unset  = NULL,
         .next_sceneId_if_set    = NULL,
-        .graphic_bank           = 3,
+        .graphic_bank           = 2,
         .graphic_ptn0           = SC042_PTN_BLK0,
         .graphic_ptn1           = SC042_PTN_BLK1,
         .graphic_col0           = SC042_COL_BLK0,

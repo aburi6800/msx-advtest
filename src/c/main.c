@@ -148,21 +148,28 @@ void run_scene(SceneId start_scene_id)
 
             scene = scenes[scene_idx];
 
-            // シーン分岐のみ行う場合
+            // フラグによるシーン分岐のみ行う場合
             if (scene.flag_to_check) {
                 if (game_flags & scene.flag_to_check) {
-//                    scene_id = scene.next_scene_if_set;
                     scene_idx = getSceneIdx(scene.next_sceneId_if_set);
                 } else {
-//                    scene_id = scene.next_scene_if_unset;
                     scene_idx = getSceneIdx(scene.next_sceneId_if_unset);
                 }
 
             // 通常のシーンの場合
             } else {
-                // グラフィックデータが設定されている場合はデータを展開し表示する
-                // TODO : 画面切り替え時に何かしら処理をする
+                // 直前のシーンIDを現在のシーンIDに置き換える
+                previous_scene_idx = scene_idx;
+
                 if (scene.graphic_ptn0 != 0) {
+                    // グラフィックデータが設定されている場合
+                    // ブロック1/2のカラーテーブル設定（ブランク）
+                    for (uint16_t i = 0; i < 2048; i++) {
+                        temp[i] = 0x00;
+                    }
+                    vdp_vwrite(temp, VRAM_COLOR_TBL1, 0x0800);
+                    vdp_vwrite(temp, VRAM_COLOR_TBL2, 0x0800);
+                    // データを展開し表示する
                     switch_bank(scene.graphic_bank);
                     unpack(scene.graphic_ptn0, temp);
                     vdp_vwrite(temp, VRAM_PTN_GENR_TBL1, 0x04c0);
@@ -177,8 +184,13 @@ void run_scene(SceneId start_scene_id)
                 // メッセージを表示
                 put_message(0, 17, scene.message);
 
-                // 直前のシーンIDを現在のシーンIDに置き換える
-                previous_scene_idx = scene_idx;
+                if (scene.next_sceneId_if_unset != NOSCENE) {
+                    // 次シーンの設定のみが行われている場合、キー入力を待ち、シーンを変更する
+                    put_message((31 - sizeof(waitMessage)), 23, waitMessage);
+                    keywait();
+                    clear_message();
+                    scene_idx = getSceneIdx(scene.next_sceneId_if_unset);
+                }
             }
 
         } else {
@@ -226,11 +238,10 @@ void run_scene(SceneId start_scene_id)
                             // シーン遷移
                             if (choice->next_sceneId_if_set) {
                                 if (choice->message_if_set != '\0') {
-                                    put_message(0, 23, waitMessage);
+                                    put_message((32 - sizeof(waitMessage)), 23, waitMessage);
                                     keywait();
                                     clear_message();
                                 }
-//                                scene_id = choice->next_scene_if_set;
                                 scene_idx = getSceneIdx(choice->next_sceneId_if_set);
                             }
 
@@ -247,11 +258,10 @@ void run_scene(SceneId start_scene_id)
                             // シーン遷移
                             if (choice->next_sceneId_if_unset) {
                                 if (choice->message_if_unset != '\0') {
-                                    put_message(0, 23, waitMessage);
+                                    put_message((32 - sizeof(waitMessage)), 23, waitMessage);
                                     keywait();
                                     clear_message();
                                 }
-//                                scene_id = choice->next_scene_if_unset;
                                 scene_idx = getSceneIdx(choice->next_sceneId_if_unset);
                             }
                         }
@@ -261,10 +271,11 @@ void run_scene(SceneId start_scene_id)
                 }
             }
 
+            // コマンドがマッチしたか
             if (!matched) {
+                // コマンドがマッチしなかった場合は、固定のメッセージを表示する
                 put_message(0, 17, dontMessage);
             }
-
         }
     }
 }
