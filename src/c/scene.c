@@ -117,6 +117,25 @@ Scene scenes[MAX_SCENES] = {
         }
     },
 
+    // ENDING
+    {
+        .sceneId                = ENDING,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = TITLE,
+        .next_sceneId_if_set    = NOSCENE,
+        .graphic_bank           = 1,
+        .graphic_ptn0           = ENDING_PTN_BLK0,
+        .graphic_ptn1           = ENDING_PTN_BLK1,
+        .graphic_col0           = ENDING_COL_BLK0,
+        .graphic_col1           = ENDING_COL_BLK1,
+        .message                = message98000,
+        .choices = {
+            {
+                .commands               = {NULL}
+            }
+        }
+    },
+
     // SCENE 1
     {
         .sceneId                = SCENE01,

@@ -3,6 +3,7 @@
 
 PUBLIC _TITLE_PTN_BLK0, _TITLE_PTN_BLK1, _TITLE_COL_BLK0, _TITLE_COL_BLK1
 PUBLIC _OVER_PTN_BLK0, _OVER_PTN_BLK1, _OVER_COL_BLK0, _OVER_COL_BLK1
+PUBLIC _ENDING_PTN_BLK0, _ENDING_PTN_BLK1, _ENDING_COL_BLK0, _ENDING_COL_BLK1
 
 PUBLIC _SC010_PTN_BLK0, _SC010_PTN_BLK1, _SC010_COL_BLK0, _SC010_COL_BLK1
 PUBLIC _SC020_PTN_BLK0, _SC020_PTN_BLK1, _SC020_COL_BLK0, _SC020_COL_BLK1
@@ -37,6 +38,15 @@ _OVER_COL_BLK0:
 INCBIN "../../resources/bank01/over_col_blk0.plet5"
 _OVER_COL_BLK1:
 INCBIN "../../resources/bank01/over_col_blk1.plet5"
+
+_ENDING_PTN_BLK0:
+INCBIN "../../resources/bank01/ending_ptn_blk0.plet5"
+_ENDING_PTN_BLK1:
+INCBIN "../../resources/bank01/ending_ptn_blk1.plet5"
+_ENDING_COL_BLK0:
+INCBIN "../../resources/bank01/ending_col_blk0.plet5"
+_ENDING_COL_BLK1:
+INCBIN "../../resources/bank01/ending_col_blk1.plet5"
 
 
 SECTION BANK_02

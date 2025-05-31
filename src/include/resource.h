@@ -14,6 +14,11 @@ extern uint8_t OVER_PTN_BLK1[];
 extern uint8_t OVER_COL_BLK0[];
 extern uint8_t OVER_COL_BLK1[];
 
+extern uint8_t ENDING_PTN_BLK0[];
+extern uint8_t ENDING_PTN_BLK1[];
+extern uint8_t ENDING_COL_BLK0[];
+extern uint8_t ENDING_COL_BLK1[];
+
 extern uint8_t SC010_PTN_BLK0[];
 extern uint8_t SC010_PTN_BLK1[];
 extern uint8_t SC010_COL_BLK0[];
