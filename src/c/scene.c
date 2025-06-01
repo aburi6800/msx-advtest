@@ -1011,10 +1011,10 @@ Scene scenes[MAX_SCENES] = {
         .next_sceneId_if_unset  = NULL,
         .next_sceneId_if_set    = NULL,
         .graphic_bank           = 3,
-        .graphic_ptn0           = SC061_PTN_BLK0,
-        .graphic_ptn1           = SC061_PTN_BLK1,
-        .graphic_col0           = SC061_COL_BLK0,
-        .graphic_col1           = SC061_COL_BLK1,
+        .graphic_ptn0           = SC062_PTN_BLK0,
+        .graphic_ptn1           = SC062_PTN_BLK1,
+        .graphic_col0           = SC062_COL_BLK0,
+        .graphic_col1           = SC062_COL_BLK1,
         .message                = message06200,
         .choices = {
             {
