@@ -25,6 +25,12 @@
 
 <br>
 
+## Attention
+
+- This game is available in Japanese only.
+
+<br>
+
 ## How to Build
 
 Requires z88dk and cmake.  
