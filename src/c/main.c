@@ -279,6 +279,10 @@ void run_scene(SceneId start_scene_id)
                         break;
                     }
                 }
+
+                if (matched) {
+                    break;
+                }
             }
 
             // コマンドがマッチしたか

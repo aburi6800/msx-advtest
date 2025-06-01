@@ -2,6 +2,7 @@
 ; copyright-holders:aburi6800 (Hitoshi Iwai)
 
 #define MSX_WRTVRM          0x004d
+#define BEEP                0x00c0
 #define VRAM_PTN_NAME_TBL1  0x1800
 
 SECTION code_user
