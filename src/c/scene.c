@@ -9,8 +9,6 @@
 // 最大シーン数
 #define MAX_SCENES 20
 
-// 最大選択肢数
-#define MAX_CHOICES 10
 
 // シーンIDの列挙型
 typedef enum {
@@ -62,26 +60,13 @@ typedef struct {
     uint8_t *graphic_col0;          // グラフィックデータ(カラーテーブル PAGE0)
     uint8_t *graphic_col1;          // グラフィックデータ(カラーテーブル PAGE1)
     uint8_t *message;               // シーンの最初に表示するメッセージ
-    Choice choices[MAX_CHOICES];
+    uint8_t *choices;
 } Scene;
 
 
-// シーンデータ
-Scene scenes[MAX_SCENES] = {
-    // TITLE
-    {
-        .sceneId                = TITLE,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NOSCENE,
-        .next_sceneId_if_set    = NOSCENE,
-        .graphic_bank           = 1,
-        .graphic_ptn0           = TITLE_PTN_BLK0,
-        .graphic_ptn1           = TITLE_PTN_BLK1,
-        .graphic_col0           = TITLE_COL_BLK0,
-        .graphic_col1           = TITLE_COL_BLK1,
-        .message                = message00000,
-        .choices = {
-            {
+// 選択肢データ
+Choice choicesTitle[2] = {
+            {   
                 .required_flag          = 0,
                 .commands               = {"START", NULL},
                 .flag_to_check          = 0,
@@ -92,63 +77,18 @@ Scene scenes[MAX_SCENES] = {
                 .set_flag_if_set        = 0,
                 .next_sceneId_if_set    = NOSCENE
             },
-            {
-                .commands               = {NULL}
+            {   
+                .required_flag          = 0,
+                {NULL}
             }
-        }
-    },
-
-    // GAME OVER
-    {
-        .sceneId                = OVER,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = TITLE,
-        .next_sceneId_if_set    = NOSCENE,
-        .graphic_bank           = 1,
-        .graphic_ptn0           = OVER_PTN_BLK0,
-        .graphic_ptn1           = OVER_PTN_BLK1,
-        .graphic_col0           = OVER_COL_BLK0,
-        .graphic_col1           = OVER_COL_BLK1,
-        .message                = message99000,
-        .choices = {
-            {
-                .commands               = {NULL}
+        };
+Choice choicesNull[1] = {
+            {   
+                .required_flag          = 0,
+                {NULL}
             }
-        }
-    },
-
-    // ENDING
-    {
-        .sceneId                = ENDING,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = TITLE,
-        .next_sceneId_if_set    = NOSCENE,
-        .graphic_bank           = 1,
-        .graphic_ptn0           = ENDING_PTN_BLK0,
-        .graphic_ptn1           = ENDING_PTN_BLK1,
-        .graphic_col0           = ENDING_COL_BLK0,
-        .graphic_col1           = ENDING_COL_BLK1,
-        .message                = message98000,
-        .choices = {
-            {
-                .commands               = {NULL}
-            }
-        }
-    },
-
-    // SCENE 1
-    {
-        .sceneId                = SCENE01,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NOSCENE,
-        .next_sceneId_if_set    = NOSCENE,
-        .graphic_bank           = 2,
-        .graphic_ptn0           = SC010_PTN_BLK0,
-        .graphic_ptn1           = SC010_PTN_BLK1,
-        .graphic_col0           = SC010_COL_BLK0,
-        .graphic_col1           = SC010_COL_BLK1,
-        .message                = message01000,
-        .choices = {
+        };
+Choice choices010[8] = {
             {
                 .required_flag          = 0,
                 .commands               = {"LOOK ROOM", NULL},
@@ -227,24 +167,10 @@ Scene scenes[MAX_SCENES] = {
                 .next_sceneId_if_set    = NOSCENE,
             },
             {
-                .commands                   = {NULL}
+                .commands               = {NULL}
             }
-        }
-    },
-
-    // SCENE 2
-    {
-        .sceneId                = SCENE02,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NOSCENE,
-        .next_sceneId_if_set    = NOSCENE,
-        .graphic_bank           = 2,
-        .graphic_ptn0           = SC020_PTN_BLK0,
-        .graphic_ptn1           = SC020_PTN_BLK1,
-        .graphic_col0           = SC020_COL_BLK0,
-        .graphic_col1           = SC020_COL_BLK1,
-        .message                = message02000,
-        .choices = {
+        };
+Choice choices020[6] = {
             {
                 .required_flag          = 0,
                 .commands               = {"GO BACK", "BACK", "B", NULL},
@@ -303,41 +229,8 @@ Scene scenes[MAX_SCENES] = {
             {
                 .commands               = {NULL}
             }
-        }
-    },
-
-    // SCENE 3
-    {
-        .sceneId                = SCENE03,
-        .flag_to_check          = FLAG_FAIL_APPLE,
-        .next_sceneId_if_unset  = SCENE03_1,
-        .next_sceneId_if_set    = SCENE03_2,
-        .graphic_bank           = 0,
-        .graphic_ptn0           = NULL,
-        .graphic_ptn1           = NULL,
-        .graphic_col0           = NULL,
-        .graphic_col1           = NULL,
-        .message                = NULL,
-        .choices = {
-            {
-                .commands               = {NULL}
-            }
-        }
-    },
-
-    // SCENE 3-1
-    {
-        .sceneId                = SCENE03_1,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NULL,
-        .next_sceneId_if_set    = NULL,
-        .graphic_bank           = 2,
-        .graphic_ptn0           = SC031_PTN_BLK0,
-        .graphic_ptn1           = SC031_PTN_BLK1,
-        .graphic_col0           = SC031_COL_BLK0,
-        .graphic_col1           = SC031_COL_BLK1,
-        .message                = message03100,
-        .choices = {
+        };
+Choice choices031[7] = {
             {
                 .required_flag          = 0,
                 .commands               = {"GO BACK", "BACK", "B", NULL},
@@ -407,22 +300,8 @@ Scene scenes[MAX_SCENES] = {
             {
                 .commands = {NULL}
             }
-        }
-    },
-
-    // SCENE 3-2
-    {
-        .sceneId                = SCENE03_2,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NOSCENE,
-        .next_sceneId_if_set    = NOSCENE,
-        .graphic_bank           = 2,
-        .graphic_ptn0           = SC032_PTN_BLK0,
-        .graphic_ptn1           = SC032_PTN_BLK1,
-        .graphic_col0           = SC032_COL_BLK0,
-        .graphic_col1           = SC032_COL_BLK1,
-        .message                = message03200,
-        .choices = {
+        };
+Choice choices032[8] = {
             {
                 .required_flag          = 0,
                 .commands               = {"GO BACK", "BACK", "B", NULL},
@@ -503,41 +382,8 @@ Scene scenes[MAX_SCENES] = {
             {
                 .commands               = {NULL}
             }
-        }
-    },
-
-    // SCENE 4
-    {
-        .sceneId                = SCENE04,
-        .flag_to_check          = FLAG_KILL_SNAKE,
-        .next_sceneId_if_unset  = SCENE04_1,
-        .next_sceneId_if_set    = SCENE04_2,
-        .graphic_bank           = 0,
-        .graphic_ptn0           = NULL,
-        .graphic_ptn1           = NULL,
-        .graphic_col0           = NULL,
-        .graphic_col1           = NULL,
-        .message                = NULL,
-        .choices = {
-            {
-                .commands               = {NULL}
-            }
-        }
-    },
-
-    // SCENE 4-1
-    {
-        .sceneId                = SCENE04_1,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NULL,
-        .next_sceneId_if_set    = NULL,
-        .graphic_bank           = 2,
-        .graphic_ptn0           = SC041_PTN_BLK0,
-        .graphic_ptn1           = SC041_PTN_BLK1,
-        .graphic_col0           = SC041_COL_BLK0,
-        .graphic_col1           = SC041_COL_BLK1,
-        .message                = message04100,
-        .choices = {
+        };
+Choice choices041[6] = {
             {
                 .required_flag          = 0,
                 .commands               = {"GO BACK", "BACK", "B", NULL},
@@ -596,22 +442,8 @@ Scene scenes[MAX_SCENES] = {
             {
                 .commands = {NULL}
             }
-        }
-    },
-
-    // SCENE 4-2
-    {
-        .sceneId                = SCENE04_2,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NULL,
-        .next_sceneId_if_set    = NULL,
-        .graphic_bank           = 2,
-        .graphic_ptn0           = SC042_PTN_BLK0,
-        .graphic_ptn1           = SC042_PTN_BLK1,
-        .graphic_col0           = SC042_COL_BLK0,
-        .graphic_col1           = SC042_COL_BLK1,
-        .message                = message04200,
-        .choices = {
+        };
+Choice choices042[5] = {
             {
                 .required_flag          = 0,
                 .commands               = {"GO BACK", "BACK", "B", NULL},
@@ -659,60 +491,8 @@ Scene scenes[MAX_SCENES] = {
             {
                 .commands = {NULL}
             }
-        }
-    },
-
-    // SCENE 5
-    {
-        .sceneId                = SCENE05,
-        .flag_to_check          = FLAG_HAVE_SWORD,
-        .next_sceneId_if_unset  = SCENE05B,
-        .next_sceneId_if_set    = SCENE05_2,
-        .graphic_bank           = 0,
-        .graphic_ptn0           = NULL,
-        .graphic_ptn1           = NULL,
-        .graphic_col0           = NULL,
-        .graphic_col1           = NULL,
-        .message                = NULL,
-        .choices = {
-            {
-                .commands = {NULL}
-            }
-        }
-    },
-
-    // SCENE 5B
-    {
-        .sceneId                = SCENE05B,
-        .flag_to_check          = FLAG_BROKEN_SWORD,
-        .next_sceneId_if_unset  = SCENE05_1,
-        .next_sceneId_if_set    = SCENE05_3,
-        .graphic_bank           = 0,
-        .graphic_ptn0           = NULL,
-        .graphic_ptn1           = NULL,
-        .graphic_col0           = NULL,
-        .graphic_col1           = NULL,
-        .message                = NULL,
-        .choices = {
-            {
-                .commands = {NULL}
-            }
-        }
-    },
-
-    // SCENE 5-1
-    {
-        .sceneId                = SCENE05_1,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NULL,
-        .next_sceneId_if_set    = NULL,
-        .graphic_bank           = 3,
-        .graphic_ptn0           = SC051_PTN_BLK0,
-        .graphic_ptn1           = SC051_PTN_BLK1,
-        .graphic_col0           = SC051_COL_BLK0,
-        .graphic_col1           = SC051_COL_BLK1,
-        .message                = message05100,
-        .choices = {
+        };
+Choice choices051[7] = {
             {
                 .required_flag          = 0,
                 .commands               = {"GO BACK", "BACK", "B", NULL},
@@ -782,22 +562,8 @@ Scene scenes[MAX_SCENES] = {
             {
                 .commands = {NULL}
             }
-        }
-    },
-
-    // SCENE 5-2
-    {
-        .sceneId                = SCENE05_2,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NULL,
-        .next_sceneId_if_set    = NULL,
-        .graphic_bank           = 3,
-        .graphic_ptn0           = SC052_PTN_BLK0,
-        .graphic_ptn1           = SC052_PTN_BLK1,
-        .graphic_col0           = SC052_COL_BLK0,
-        .graphic_col1           = SC052_COL_BLK1,
-        .message                = message05200,
-        .choices = {
+        };
+Choice choices052[4] = {
             {
                 .required_flag          = 0,
                 .commands               = {"GO BACK", "BACK", "B", NULL},
@@ -834,22 +600,8 @@ Scene scenes[MAX_SCENES] = {
             {
                 .commands = {NULL}
             }
-        }
-    },
-
-    // SCENE 5-3
-    {
-        .sceneId                = SCENE05_3,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NULL,
-        .next_sceneId_if_set    = NULL,
-        .graphic_bank           = 3,
-        .graphic_ptn0           = SC053_PTN_BLK0,
-        .graphic_ptn1           = SC053_PTN_BLK1,
-        .graphic_col0           = SC053_COL_BLK0,
-        .graphic_col1           = SC053_COL_BLK1,
-        .message                = message05300,
-        .choices = {
+        };
+Choice choices053[4] = {
             {
                 .required_flag          = 0,
                 .commands               = {"GO BACK", "BACK", "B", NULL},
@@ -886,41 +638,8 @@ Scene scenes[MAX_SCENES] = {
             {
                 .commands = {NULL}
             }
-        }
-    },
-
-    // SCENE 6
-    {
-        .sceneId                = SCENE06,
-        .flag_to_check          = FLAG_KILL_SKELTON,
-        .next_sceneId_if_unset  = SCENE06_1,
-        .next_sceneId_if_set    = SCENE06_2,
-        .graphic_bank           = 0,
-        .graphic_ptn0           = NULL,
-        .graphic_ptn1           = NULL,
-        .graphic_col0           = NULL,
-        .graphic_col1           = NULL,
-        .message                = NULL,
-        .choices = {
-            {
-                .commands = {NULL}
-            }
-        }
-    },
-
-    // SCENE 6-1
-    {
-        .sceneId                = SCENE06_1,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NULL,
-        .next_sceneId_if_set    = NULL,
-        .graphic_bank           = 3,
-        .graphic_ptn0           = SC061_PTN_BLK0,
-        .graphic_ptn1           = SC061_PTN_BLK1,
-        .graphic_col0           = SC061_COL_BLK0,
-        .graphic_col1           = SC061_COL_BLK1,
-        .message                = message06100,
-        .choices = {
+        };
+Choice choices061[8] = {
             {
                 .required_flag          = 0,
                 .commands               = {"GO BACK", "BACK", "B", NULL},
@@ -1001,22 +720,8 @@ Scene scenes[MAX_SCENES] = {
             {
                 .commands = {NULL}
             }
-        }
-    },
-
-    // SCENE 6-2
-    {
-        .sceneId                = SCENE06_2,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NULL,
-        .next_sceneId_if_set    = NULL,
-        .graphic_bank           = 3,
-        .graphic_ptn0           = SC062_PTN_BLK0,
-        .graphic_ptn1           = SC062_PTN_BLK1,
-        .graphic_col0           = SC062_COL_BLK0,
-        .graphic_col1           = SC062_COL_BLK1,
-        .message                = message06200,
-        .choices = {
+        };
+Choice choices062[8] = {
             {
                 .required_flag          = 0,
                 .commands               = {"GO BACK", "BACK", "B", NULL},
@@ -1097,22 +802,8 @@ Scene scenes[MAX_SCENES] = {
             {
                 .commands = {NULL}
             }
-        }
-    },
-
-    // SCENE 7
-    {
-        .sceneId                = SCENE07,
-        .flag_to_check          = 0,
-        .next_sceneId_if_unset  = NULL,
-        .next_sceneId_if_set    = NULL,
-        .graphic_bank           = 3,
-        .graphic_ptn0           = SC070_PTN_BLK0,
-        .graphic_ptn1           = SC070_PTN_BLK1,
-        .graphic_col0           = SC070_COL_BLK0,
-        .graphic_col1           = SC070_COL_BLK1,
-        .message                = message07000,
-        .choices = {
+        };
+Choice choices070[6] = {
             {
                 .required_flag          = 0,
                 .commands               = {"GO BACK", "BACK", "B", NULL},
@@ -1171,6 +862,307 @@ Scene scenes[MAX_SCENES] = {
             {
                 .commands = {NULL}
             }
-        }
+        };
+
+// シーンデータ
+Scene scenes[MAX_SCENES] = {
+    // TITLE
+    {
+        .sceneId                = TITLE,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NOSCENE,
+        .next_sceneId_if_set    = NOSCENE,
+        .graphic_bank           = 1,
+        .graphic_ptn0           = TITLE_PTN_BLK0,
+        .graphic_ptn1           = TITLE_PTN_BLK1,
+        .graphic_col0           = TITLE_COL_BLK0,
+        .graphic_col1           = TITLE_COL_BLK1,
+        .message                = message00000,
+        .choices                = choicesTitle
+    },
+
+    // GAME OVER
+    {
+        .sceneId                = OVER,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = TITLE,
+        .next_sceneId_if_set    = NOSCENE,
+        .graphic_bank           = 1,
+        .graphic_ptn0           = OVER_PTN_BLK0,
+        .graphic_ptn1           = OVER_PTN_BLK1,
+        .graphic_col0           = OVER_COL_BLK0,
+        .graphic_col1           = OVER_COL_BLK1,
+        .message                = message99000,
+        .choices                = choicesNull
+    },
+
+    // ENDING
+    {
+        .sceneId                = ENDING,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = TITLE,
+        .next_sceneId_if_set    = NOSCENE,
+        .graphic_bank           = 1,
+        .graphic_ptn0           = ENDING_PTN_BLK0,
+        .graphic_ptn1           = ENDING_PTN_BLK1,
+        .graphic_col0           = ENDING_COL_BLK0,
+        .graphic_col1           = ENDING_COL_BLK1,
+        .message                = message98000,
+        .choices                = choicesNull
+    },
+
+    // SCENE 1
+    {
+        .sceneId                = SCENE01,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NOSCENE,
+        .next_sceneId_if_set    = NOSCENE,
+        .graphic_bank           = 2,
+        .graphic_ptn0           = SC010_PTN_BLK0,
+        .graphic_ptn1           = SC010_PTN_BLK1,
+        .graphic_col0           = SC010_COL_BLK0,
+        .graphic_col1           = SC010_COL_BLK1,
+        .message                = message01000,
+        .choices                = choices010
+    },
+
+    // SCENE 2
+    {
+        .sceneId                = SCENE02,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NOSCENE,
+        .next_sceneId_if_set    = NOSCENE,
+        .graphic_bank           = 2,
+        .graphic_ptn0           = SC020_PTN_BLK0,
+        .graphic_ptn1           = SC020_PTN_BLK1,
+        .graphic_col0           = SC020_COL_BLK0,
+        .graphic_col1           = SC020_COL_BLK1,
+        .message                = message02000,
+        .choices                = choices020
+    },
+
+    // SCENE 3
+    {
+        .sceneId                = SCENE03,
+        .flag_to_check          = FLAG_FAIL_APPLE,
+        .next_sceneId_if_unset  = SCENE03_1,
+        .next_sceneId_if_set    = SCENE03_2,
+        .graphic_bank           = 0,
+        .graphic_ptn0           = NULL,
+        .graphic_ptn1           = NULL,
+        .graphic_col0           = NULL,
+        .graphic_col1           = NULL,
+        .message                = NULL,
+        .choices                = choicesNull
+    },
+
+    // SCENE 3-1
+    {
+        .sceneId                = SCENE03_1,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NULL,
+        .next_sceneId_if_set    = NULL,
+        .graphic_bank           = 2,
+        .graphic_ptn0           = SC031_PTN_BLK0,
+        .graphic_ptn1           = SC031_PTN_BLK1,
+        .graphic_col0           = SC031_COL_BLK0,
+        .graphic_col1           = SC031_COL_BLK1,
+        .message                = message03100,
+        .choices                = choices031
+    },
+
+    // SCENE 3-2
+    {
+        .sceneId                = SCENE03_2,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NOSCENE,
+        .next_sceneId_if_set    = NOSCENE,
+        .graphic_bank           = 2,
+        .graphic_ptn0           = SC032_PTN_BLK0,
+        .graphic_ptn1           = SC032_PTN_BLK1,
+        .graphic_col0           = SC032_COL_BLK0,
+        .graphic_col1           = SC032_COL_BLK1,
+        .message                = message03200,
+        .choices                = choices032
+    },
+
+    // SCENE 4
+    {
+        .sceneId                = SCENE04,
+        .flag_to_check          = FLAG_KILL_SNAKE,
+        .next_sceneId_if_unset  = SCENE04_1,
+        .next_sceneId_if_set    = SCENE04_2,
+        .graphic_bank           = 0,
+        .graphic_ptn0           = NULL,
+        .graphic_ptn1           = NULL,
+        .graphic_col0           = NULL,
+        .graphic_col1           = NULL,
+        .message                = NULL,
+        .choices                = choicesNull
+    },
+
+    // SCENE 4-1
+    {
+        .sceneId                = SCENE04_1,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NULL,
+        .next_sceneId_if_set    = NULL,
+        .graphic_bank           = 2,
+        .graphic_ptn0           = SC041_PTN_BLK0,
+        .graphic_ptn1           = SC041_PTN_BLK1,
+        .graphic_col0           = SC041_COL_BLK0,
+        .graphic_col1           = SC041_COL_BLK1,
+        .message                = message04100,
+        .choices                = choices041
+    },
+
+    // SCENE 4-2
+    {
+        .sceneId                = SCENE04_2,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NULL,
+        .next_sceneId_if_set    = NULL,
+        .graphic_bank           = 2,
+        .graphic_ptn0           = SC042_PTN_BLK0,
+        .graphic_ptn1           = SC042_PTN_BLK1,
+        .graphic_col0           = SC042_COL_BLK0,
+        .graphic_col1           = SC042_COL_BLK1,
+        .message                = message04200,
+        .choices                = choices042
+    },
+
+    // SCENE 5
+    {
+        .sceneId                = SCENE05,
+        .flag_to_check          = FLAG_HAVE_SWORD,
+        .next_sceneId_if_unset  = SCENE05B,
+        .next_sceneId_if_set    = SCENE05_2,
+        .graphic_bank           = 0,
+        .graphic_ptn0           = NULL,
+        .graphic_ptn1           = NULL,
+        .graphic_col0           = NULL,
+        .graphic_col1           = NULL,
+        .message                = NULL,
+        .choices                = choicesNull
+    },
+
+    // SCENE 5B
+    {
+        .sceneId                = SCENE05B,
+        .flag_to_check          = FLAG_BROKEN_SWORD,
+        .next_sceneId_if_unset  = SCENE05_1,
+        .next_sceneId_if_set    = SCENE05_3,
+        .graphic_bank           = 0,
+        .graphic_ptn0           = NULL,
+        .graphic_ptn1           = NULL,
+        .graphic_col0           = NULL,
+        .graphic_col1           = NULL,
+        .message                = NULL,
+        .choices                = choicesNull
+    },
+
+    // SCENE 5-1
+    {
+        .sceneId                = SCENE05_1,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NULL,
+        .next_sceneId_if_set    = NULL,
+        .graphic_bank           = 3,
+        .graphic_ptn0           = SC051_PTN_BLK0,
+        .graphic_ptn1           = SC051_PTN_BLK1,
+        .graphic_col0           = SC051_COL_BLK0,
+        .graphic_col1           = SC051_COL_BLK1,
+        .message                = message05100,
+        .choices                = choices051
+    },
+
+    // SCENE 5-2
+    {
+        .sceneId                = SCENE05_2,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NULL,
+        .next_sceneId_if_set    = NULL,
+        .graphic_bank           = 3,
+        .graphic_ptn0           = SC052_PTN_BLK0,
+        .graphic_ptn1           = SC052_PTN_BLK1,
+        .graphic_col0           = SC052_COL_BLK0,
+        .graphic_col1           = SC052_COL_BLK1,
+        .message                = message05200,
+        .choices                = choices052
+    },
+
+    // SCENE 5-3
+    {
+        .sceneId                = SCENE05_3,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NULL,
+        .next_sceneId_if_set    = NULL,
+        .graphic_bank           = 3,
+        .graphic_ptn0           = SC053_PTN_BLK0,
+        .graphic_ptn1           = SC053_PTN_BLK1,
+        .graphic_col0           = SC053_COL_BLK0,
+        .graphic_col1           = SC053_COL_BLK1,
+        .message                = message05300,
+        .choices                = choices053
+    },
+
+    // SCENE 6
+    {
+        .sceneId                = SCENE06,
+        .flag_to_check          = FLAG_KILL_SKELTON,
+        .next_sceneId_if_unset  = SCENE06_1,
+        .next_sceneId_if_set    = SCENE06_2,
+        .graphic_bank           = 0,
+        .graphic_ptn0           = NULL,
+        .graphic_ptn1           = NULL,
+        .graphic_col0           = NULL,
+        .graphic_col1           = NULL,
+        .message                = NULL,
+        .choices                = choicesNull
+    },
+
+    // SCENE 6-1
+    {
+        .sceneId                = SCENE06_1,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NULL,
+        .next_sceneId_if_set    = NULL,
+        .graphic_bank           = 3,
+        .graphic_ptn0           = SC061_PTN_BLK0,
+        .graphic_ptn1           = SC061_PTN_BLK1,
+        .graphic_col0           = SC061_COL_BLK0,
+        .graphic_col1           = SC061_COL_BLK1,
+        .message                = message06100,
+        .choices                = choices061
+    },
+
+    // SCENE 6-2
+    {
+        .sceneId                = SCENE06_2,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NULL,
+        .next_sceneId_if_set    = NULL,
+        .graphic_bank           = 3,
+        .graphic_ptn0           = SC062_PTN_BLK0,
+        .graphic_ptn1           = SC062_PTN_BLK1,
+        .graphic_col0           = SC062_COL_BLK0,
+        .graphic_col1           = SC062_COL_BLK1,
+        .message                = message06200,
+        .choices                = choices062
+    },
+
+    // SCENE 7
+    {
+        .sceneId                = SCENE07,
+        .flag_to_check          = 0,
+        .next_sceneId_if_unset  = NULL,
+        .next_sceneId_if_set    = NULL,
+        .graphic_bank           = 3,
+        .graphic_ptn0           = SC070_PTN_BLK0,
+        .graphic_ptn1           = SC070_PTN_BLK1,
+        .graphic_col0           = SC070_COL_BLK0,
+        .graphic_col1           = SC070_COL_BLK1,
+        .message                = message07000,
+        .choices                = choices070
     }
 };
