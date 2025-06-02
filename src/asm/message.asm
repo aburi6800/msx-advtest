@@ -51,6 +51,9 @@ _put_message_L1:
     or      a
     jr      z, _put_message_exit    ; 0x00 = end of data
 
+    cp      0x01
+    jr      z, effects_0            ; 0x01 = effects
+
     cp      0x0a
     jr      z, _put_message_L2      ; 0x0a = line feed
 
@@ -90,6 +93,23 @@ _put_message_L4:
 
 _put_message_exit:
     ret
+
+
+; ============================================================
+; effects sub
+; ============================================================
+effects_0:
+    ld      a, (de)
+    inc     de
+
+    or      a
+    jr      nz, effects_exit
+
+; PLAY MUSIC1
+    nop
+
+effects_exit:
+    jp      _put_message_L1
 
 
 ; ============================================================

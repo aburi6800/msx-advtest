@@ -16,12 +16,16 @@
 #include "../include/switch_bank.h"
 #include "../include/message.h"
 #include "../include/key.h"
+#include "../include/psgdriver.h"
 #include "./scene.c"
 
 
 // font.asmへの参照
 extern uint8_t FONT_COL_TBL[];
 extern uint8_t FONT_PTN_TBL[];
+
+// サウンドドライバステータス
+extern uint8_t sounddrv_bgmwk[];
 
 
 // コマンド入力用バッファ
@@ -40,10 +44,10 @@ uint8_t matched = 0;
 uint8_t temp[2048];
 
 // シーンデータへの参照
-Scene scene;
+Scene *scene;
 
-// 選択肢データへの参照
-Choice *choice;
+// 選択肢データ
+Choice choice;
 
 
 void input_command(uint8_t _y)
@@ -125,8 +129,8 @@ uint8_t getSceneIdx(SceneId sceneId)
 {
     uint8_t idx = 0;
 
-    for (uint8_t i = 0; i < MAX_SCENES; i++) {
-        if (scenes[i].sceneId == sceneId) {
+    for (uint8_t i = 0; i < SCENE_NUM; i++) {
+        if (scenes[i]->sceneId == sceneId) {
             idx = i;
             break;
         }
@@ -139,23 +143,27 @@ uint8_t getSceneIdx(SceneId sceneId)
 // シーンの実行処理
 void run_scene(SceneId start_scene_id)
 {
+    // 現在のシーンの配列インデックス
     uint8_t scene_idx = getSceneIdx(start_scene_id);
+    // 直前のシーンの配列インデックス
     uint8_t previous_scene_idx = 0xff;
+    // ループ終了判定フラグ
     bool_t end_flg = false;
 
-//    while (scene_idx >= 0) {
     while (!end_flg) {
 
+        // 直前とシーンが変わっているか
         if (scene_idx != previous_scene_idx) {
 
+            // 変わっている場合は、シーンを変更する
             scene = scenes[scene_idx];
 
             // フラグによるシーン分岐のみ行う場合
-            if (scene.flag_to_check) {
-                if (game_flags & scene.flag_to_check) {
-                    scene_idx = getSceneIdx(scene.next_sceneId_if_set);
+            if (scene->flag_to_check) {
+                if (game_flags & scene->flag_to_check) {
+                    scene_idx = getSceneIdx(scene->next_sceneId_if_set);
                 } else {
-                    scene_idx = getSceneIdx(scene.next_sceneId_if_unset);
+                    scene_idx = getSceneIdx(scene->next_sceneId_if_unset);
                 }
 
             // 通常のシーンの場合
@@ -163,7 +171,7 @@ void run_scene(SceneId start_scene_id)
                 // 直前のシーンIDを現在のシーンIDに置き換える
                 previous_scene_idx = scene_idx;
 
-                if (scene.graphic_ptn0 != 0) {
+                if (scene->graphic_ptn0 != 0) {
                     // グラフィックデータが設定されている場合
                     // ブロック1/2のカラーテーブル設定（ブランク）
                     for (uint16_t i = 0; i < 2048; i++) {
@@ -172,21 +180,21 @@ void run_scene(SceneId start_scene_id)
                     vdp_vwrite(temp, VRAM_COLOR_TBL1, 0x0800);
                     vdp_vwrite(temp, VRAM_COLOR_TBL2, 0x0800);
                     // データを展開し表示する
-                    switch_bank(scene.graphic_bank);
-                    unpack(scene.graphic_ptn0, temp);
+                    switch_bank(scene->graphic_bank);
+                    unpack(scene->graphic_ptn0, temp);
                     vdp_vwrite(temp, VRAM_PTN_GENR_TBL1, 0x04c0);
-                    unpack(scene.graphic_ptn1, temp);
+                    unpack(scene->graphic_ptn1, temp);
                     vdp_vwrite(temp, VRAM_PTN_GENR_TBL2, 0x0390);
-                    unpack(scene.graphic_col0, temp);
+                    unpack(scene->graphic_col0, temp);
                     vdp_vwrite(temp, VRAM_COLOR_TBL1, 0x04c0);
-                    unpack(scene.graphic_col1, temp);
+                    unpack(scene->graphic_col1, temp);
                     vdp_vwrite(temp, VRAM_COLOR_TBL2, 0x0390);
                 }
 
                 // メッセージを表示
-                put_message(0, 17, scene.message);
+                put_message(0, 17, scene->message);
 
-                if (scene.sceneId == OVER) {
+                if (scene->sceneId == OVER) {
                     // ゲームオーバーの場合、キー入力を待ち、処理を終了する
                     put_message((31 - sizeof(waitMessage)), 23, waitMessage);
                     keywait();
@@ -194,12 +202,12 @@ void run_scene(SceneId start_scene_id)
                     end_flg = true;
                 }
 
-                if (scene.next_sceneId_if_unset != NOSCENE) {
+                if (scene->next_sceneId_if_unset != NOSCENE) {
                     // 次シーンの設定のみが行われている場合、キー入力を待ち、シーンを変更する
                     put_message((31 - sizeof(waitMessage)), 23, waitMessage);
                     keywait();
                     clear_message();
-                    scene_idx = getSceneIdx(scene.next_sceneId_if_unset);
+                    scene_idx = getSceneIdx(scene->next_sceneId_if_unset);
                 }
             }
 
@@ -213,66 +221,69 @@ void run_scene(SceneId start_scene_id)
             // コマンド一致フラグOFF
             matched = 0;
 
-            for (uint8_t i = 0; i < MAX_CHOICES; i++) {
+            Choice *choices = scene->choices;
+            uint8_t i = 0;
+
+            while (choices[i] != NULL) {
 
                 // シーンデータの選択肢データへの参照を取得
-                choice = &scene.choices[i];
+                choice = choices[i];
 
                 // 選択肢データのコマンド未設定時はループ終了
-                if (choice->commands[0] == '\0') {
+                if (choice.commands[0] == '\0') {
                     break;
                 } 
 
                 // すべてのコマンド候補に対して比較
-                for (int j = 0; choice->commands[j] != NULL; j++) {
+                for (int j = 0; choice.commands[j] != NULL; j++) {
 
                     // 選択肢データのコマンド＝入力コマンド and
                     // 条件フラグ＝設定なし or 条件フラグの対象＝ON の場合
-                    if ((strcmp(choice->commands[j], input_buffer) == 0) &&
-                        ((choice->required_flag == 0) || (game_flags & choice->required_flag))) {
+                    if ((strcmp(choice.commands[j], input_buffer) == 0) &&
+                        ((choice.required_flag == 0) || (game_flags & choice.required_flag))) {
 
                         // コマンド一致フラグON
                         matched = 1;
 
                         // 選択肢データのチェック対象フラグ＝設定あり and
                         // チェック対象フラグ＝ON の場合
-                        if ((choice->flag_to_check) && (game_flags & choice->flag_to_check)) {
+                        if ((choice.flag_to_check) && (game_flags & choice.flag_to_check)) {
                             // メッセージ表示
-                            if (choice->message_if_set != '\0') {
-                                put_message(0, 17, choice->message_if_set);
+                            if (choice.message_if_set != NULL) {
+                                put_message(0, 17, choice.message_if_set);
                             }
                             // フラグセット
-                            if (choice->set_flag_if_set) {
-                                game_flags |= choice->set_flag_if_set;
+                            if (choice.set_flag_if_set) {
+                                game_flags |= choice.set_flag_if_set;
                             }
                             // シーン遷移
-                            if (choice->next_sceneId_if_set) {
-                                if (choice->message_if_set != '\0') {
+                            if (choice.next_sceneId_if_set) {
+                                if (choice.message_if_set != NULL) {
                                     put_message((32 - sizeof(waitMessage)), 23, waitMessage);
                                     keywait();
                                     clear_message();
                                 }
-                                scene_idx = getSceneIdx(choice->next_sceneId_if_set);
+                                scene_idx = getSceneIdx(choice.next_sceneId_if_set);
                             }
 
                         // 上記以外の場合
                         } else {
                             // メッセージ表示
-                            if (choice->message_if_unset != '\0') {
-                                put_message(0, 17, choice->message_if_unset);
+                            if (choice.message_if_unset != NULL) {
+                                put_message(0, 17, choice.message_if_unset);
                             }
                             // フラグセット
-                            if (choice->set_flag_if_unset) {
-                                game_flags |= choice->set_flag_if_unset;
+                            if (choice.set_flag_if_unset) {
+                                game_flags |= choice.set_flag_if_unset;
                             }
                             // シーン遷移
-                            if (choice->next_sceneId_if_unset) {
-                                if (choice->message_if_unset != '\0') {
+                            if (choice.next_sceneId_if_unset) {
+                                if (choice.message_if_unset != NULL) {
                                     put_message((32 - sizeof(waitMessage)), 23, waitMessage);
                                     keywait();
                                     clear_message();
                                 }
-                                scene_idx = getSceneIdx(choice->next_sceneId_if_unset);
+                                scene_idx = getSceneIdx(choice.next_sceneId_if_unset);
                             }
                         }
 
@@ -283,6 +294,8 @@ void run_scene(SceneId start_scene_id)
                 if (matched) {
                     break;
                 }
+
+                i++;
             }
 
             // コマンドがマッチしたか
@@ -301,6 +314,30 @@ void main()
     set_color(15, 1, 1);
     set_mangled_mode();
     msx_set_sprite_mode(sprite_large);
+
+
+/*
+    // サウンドドライバーフック設定
+    // __INTELLISENSE__ 判定は vscode で非標準インラインアセンブル構文をエラーにしないように挿入
+    #ifndef __INTELLISENSE__
+    __asm
+    DI
+    __endasm;
+    #endif
+    uint8_t *h_time = (uint8_t *)MSX_H_TIMI;
+    uint16_t hook = (uint16_t)sounddrv_exec;
+    h_time[0] = 0xc3; // JP
+    h_time[1] = (uint8_t)(hook & 0xff);
+    h_time[2] = (uint8_t)((hook & 0xff00) >> 8);
+    #ifndef __INTELLISENSE__
+    __asm
+    EI
+    __endasm;
+    #endif
+*/
+    // サウンドドライバー初期化
+    sounddrv_init();
+
 
     // キークリックスイッチOFF
     *(uint8_t *)MSX_CLIKSW = 0;

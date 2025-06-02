@@ -12,6 +12,7 @@ include(./cmake/macros.cmake)
 
 # source files
 add_source_files(
+    ./src/asm/psgdriver.asm
     ./src/asm/font.asm
     ./src/asm/resource.asm
     ./src/asm/unpack.asm
