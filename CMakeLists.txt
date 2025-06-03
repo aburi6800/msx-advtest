@@ -14,6 +14,7 @@ include(./cmake/macros.cmake)
 add_source_files(
     ./src/asm/psgdriver.asm
     ./src/asm/font.asm
+    ./src/asm/music.asm
     ./src/asm/resource.asm
     ./src/asm/unpack.asm
     ./src/asm/switch_bank.asm
