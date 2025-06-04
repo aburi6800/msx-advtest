@@ -541,6 +541,31 @@ SOUNDDRV_CHEXEC_L3:
     LD (IX+4),$00
     LD (IX+15),$00                  ; プライオリティをゼロに初期化
 
+    ; ■全チャンネルのトラックデータ先頭アドレスをチェック
+    LD HL, SOUNDDRV_BGMWK
+    LD BC, 3                        ; ch1wk
+    ADD HL,BC
+    LD A,(HL)
+    INC HL
+    ADD A,(HL)
+    LD BC,15                        ; ch2wk
+    ADD HL,BC
+    ADD A,(HL)
+    INC HL
+    ADD A,(HL)
+    LD BC,15                        ; ch3wk
+    ADD HL,BC
+    ADD A,(HL)
+    INC HL
+    ADD A,(HL)
+
+    OR A
+    JR NZ,SOUNDDRV_CHEXEC_L31
+
+    LD A,SOUNDDRV_STATE_STOP        ; ステータスを停止に更新
+    LD (SOUNDDRV_STATE),A
+
+SOUNDDRV_CHEXEC_L31:
     RET
 
 SOUNDDRV_CHEXEC_L4:

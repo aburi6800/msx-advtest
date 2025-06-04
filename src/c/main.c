@@ -11,6 +11,7 @@
 #include <msx/gfx.h>
 
 #include "../include/resource.h"
+#include "../include/music.h"
 #include "../include/const.h"
 #include "../include/unpack.h"
 #include "../include/switch_bank.h"
@@ -24,21 +25,15 @@
 extern uint8_t FONT_COL_TBL[];
 extern uint8_t FONT_PTN_TBL[];
 
-// サウンドドライバステータス
-extern uint8_t sounddrv_bgmwk[];
-
 
 // コマンド入力用バッファ
-uint8_t input_buffer[32 - 9];
+uint8_t input_buffer[32 - sizeof(promptMessage)];
 
 // キー入力バッファ
 uint8_t key_buffer;
 
 // フラグ管理（ビット演算で扱う）
 uint16_t game_flags = 0;
-
-// コマンド一致フラグ
-uint8_t matched = 0;
 
 // 展開先ワークエリア
 uint8_t temp[2048];
@@ -50,7 +45,7 @@ Scene *scene;
 Choice choice;
 
 
-void input_command(uint8_t _y)
+void input_command()
 {
     // RETURNキー入力フラグ
     bool_t enter_flg = false;
@@ -65,13 +60,13 @@ void input_command(uint8_t _y)
     buffer_ix = 0;
 
     // プロンプト表示
-    put_message(0, _y, promptMessage);
+    put_message(0, PROMPT_LINE, promptMessage);
 
     // ループ開始
     while(enter_flg == false) {
         // バッファ内容表示
-        put_message(sizeof(promptMessage) - 1, _y , input_buffer);
-        put_message(sizeof(promptMessage) + buffer_ix - 1, _y , cursor);
+        put_message(sizeof(promptMessage) - 1, PROMPT_LINE , input_buffer);
+        put_message(sizeof(promptMessage) + buffer_ix - 1, PROMPT_LINE , cursor);
 
         // キーバッファクリア
         msx_clearkey();
@@ -98,14 +93,15 @@ void input_command(uint8_t _y)
         if (key_buffer == 0x08) {
             if (buffer_ix > 0) {
                 buffer_ix--;
-                put_message(sizeof(promptMessage) + buffer_ix, _y, blank);
+                put_message(sizeof(promptMessage) + buffer_ix, PROMPT_LINE, blank);
             }
             input_buffer[buffer_ix] = 0x00;
             continue;
         }
 
         // カーソルキーは無視する
-        if (key_buffer == 0x1c || key_buffer == 0x1d || key_buffer == 0x1e || key_buffer == 0x1f) {
+//        if (key_buffer == 0x1c || key_buffer == 0x1d || key_buffer == 0x1e || key_buffer == 0x1f) {
+        if (key_buffer >= 0x1c && key_buffer <= 0x1f) {
             continue;
         }
 
@@ -149,6 +145,8 @@ void run_scene(SceneId start_scene_id)
     uint8_t previous_scene_idx = 0xff;
     // ループ終了判定フラグ
     bool_t end_flg = false;
+    // コマンド一致フラグ
+    bool_t matched = false;
 
     while (!end_flg) {
 
@@ -177,8 +175,8 @@ void run_scene(SceneId start_scene_id)
                     for (uint16_t i = 0; i < 2048; i++) {
                         temp[i] = 0x00;
                     }
-                    vdp_vwrite(temp, VRAM_COLOR_TBL1, 0x0800);
-                    vdp_vwrite(temp, VRAM_COLOR_TBL2, 0x0800);
+                    vdp_vwrite(temp, VRAM_COLOR_TBL1, VRAM_COLOR_TBL_SIZE);
+                    vdp_vwrite(temp, VRAM_COLOR_TBL2, VRAM_COLOR_TBL_SIZE);
                     // データを展開し表示する
                     switch_bank(scene->graphic_bank);
                     unpack(scene->graphic_ptn0, temp);
@@ -196,7 +194,7 @@ void run_scene(SceneId start_scene_id)
 
                 if (scene->sceneId == OVER) {
                     // ゲームオーバーの場合、キー入力を待ち、処理を終了する
-                    put_message((31 - sizeof(waitMessage)), 23, waitMessage);
+                    put_message((31 - sizeof(waitMessage)), PROMPT_LINE, waitMessage);
                     keywait();
                     clear_message();
                     end_flg = true;
@@ -204,7 +202,7 @@ void run_scene(SceneId start_scene_id)
 
                 if (scene->next_sceneId_if_unset != NOSCENE) {
                     // 次シーンの設定のみが行われている場合、キー入力を待ち、シーンを変更する
-                    put_message((31 - sizeof(waitMessage)), 23, waitMessage);
+                    put_message((31 - sizeof(waitMessage)), PROMPT_LINE, waitMessage);
                     keywait();
                     clear_message();
                     scene_idx = getSceneIdx(scene->next_sceneId_if_unset);
@@ -213,13 +211,13 @@ void run_scene(SceneId start_scene_id)
 
         } else {
             // コマンド入力
-            input_command(23);
+            input_command();
 
             // メッセージ表示エリアクリア
             clear_message();
 
             // コマンド一致フラグOFF
-            matched = 0;
+            matched = false;
 
             Choice *choices = scene->choices;
             uint8_t i = 0;
@@ -230,7 +228,7 @@ void run_scene(SceneId start_scene_id)
                 choice = choices[i];
 
                 // 選択肢データのコマンド未設定時はループ終了
-                if (choice.commands[0] == '\0') {
+                if (choice.commands[0] == NULL) {
                     break;
                 } 
 
@@ -243,7 +241,7 @@ void run_scene(SceneId start_scene_id)
                         ((choice.required_flag == 0) || (game_flags & choice.required_flag))) {
 
                         // コマンド一致フラグON
-                        matched = 1;
+                        matched = true;
 
                         // 選択肢データのチェック対象フラグ＝設定あり and
                         // チェック対象フラグ＝ON の場合
@@ -308,36 +306,15 @@ void run_scene(SceneId start_scene_id)
 }
 
 
-void main()
+void init()
 {
+    // サウンドドライバー初期化
+    sounddrv_init();
+
     // 画面初期化
     set_color(15, 1, 1);
     set_mangled_mode();
     msx_set_sprite_mode(sprite_large);
-
-
-/*
-    // サウンドドライバーフック設定
-    // __INTELLISENSE__ 判定は vscode で非標準インラインアセンブル構文をエラーにしないように挿入
-    #ifndef __INTELLISENSE__
-    __asm
-    DI
-    __endasm;
-    #endif
-    uint8_t *h_time = (uint8_t *)MSX_H_TIMI;
-    uint16_t hook = (uint16_t)sounddrv_exec;
-    h_time[0] = 0xc3; // JP
-    h_time[1] = (uint8_t)(hook & 0xff);
-    h_time[2] = (uint8_t)((hook & 0xff00) >> 8);
-    #ifndef __INTELLISENSE__
-    __asm
-    EI
-    __endasm;
-    #endif
-*/
-    // サウンドドライバー初期化
-    sounddrv_init();
-
 
     // キークリックスイッチOFF
     *(uint8_t *)MSX_CLIKSW = 0;
@@ -347,43 +324,37 @@ void main()
     *(uint8_t *)MSX_REPCNT = 50;
 
     // ブロック1/2のパターンジェネレータテーブル設定（ブランク）
-    for (uint16_t i = 0; i < 2048; i++) {
+    for (uint16_t i = 0; i < sizeof(temp); i++) {
         temp[i] = 0x00;
     }
-    vdp_vwrite(temp, VRAM_PTN_GENR_TBL1, 0x0800);
-    vdp_vwrite(temp, VRAM_PTN_GENR_TBL2, 0x0800);
+    vdp_vwrite(temp, VRAM_PTN_GENR_TBL1, VRAM_PTN_GENR_TBL_SIZE);
+    vdp_vwrite(temp, VRAM_PTN_GENR_TBL2, VRAM_PTN_GENR_TBL_SIZE);
 
     // ブロック3のパターンジェネレータテーブル／カラーテーブル設定（フォントパターン）
     switch_bank(1);
-    vdp_vwrite(FONT_PTN_TBL, VRAM_PTN_GENR_TBL3, 0x0800);
-    vdp_vwrite(FONT_COL_TBL, VRAM_COLOR_TBL3, 0x0800);
+    vdp_vwrite(FONT_PTN_TBL, VRAM_PTN_GENR_TBL3, VRAM_PTN_GENR_TBL_SIZE);
+    vdp_vwrite(FONT_COL_TBL, VRAM_COLOR_TBL3, VRAM_COLOR_TBL_SIZE);
 
-    // パターンネームテーブル(ブロック1)の設定
+    // パターンネームテーブル初期化
     uint8_t code = 0;
 
     for (uint16_t i = 0; i < 256; i++) {
         temp[i] = 254;
     }
-    code = 0;
     for (uint8_t i = 0; i < 8; i++) {
         for (uint8_t j = 0; j < 19; j++) {
             temp[i * 32 + j + 6] = code++;
         }
     }
+    // ブロック1
     vdp_vwrite(temp, VRAM_PTN_NAME_TBL1, 0x100);
-
-    // パターンネームテーブル(ブロック2)の設定
-    for (uint16_t i = 0; i < 256; i++) {
-        temp[i] = 254;
-    }
-    code = 0;
-    for (uint8_t i = 0; i < 6; i++) {
-        for (uint8_t j = 0; j < 19; j++) {
-            temp[i * 32 + j + 6] = code++;
-        }
-    }
+    // ブロック2
     vdp_vwrite(temp, VRAM_PTN_NAME_TBL2, 0x100);
+}
 
+void main()
+{
+    init();
 
     while (0 == 0) {
         // フラグ初期化

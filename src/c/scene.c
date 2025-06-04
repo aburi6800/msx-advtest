@@ -7,7 +7,7 @@
 
 
 // シーン数
-#define SCENE_NUM 20
+#define SCENE_NUM 21
 
 
 // シーンIDの列挙型
@@ -17,6 +17,7 @@ typedef enum {
     SCENE01,
     SCENE02,
     SCENE03,
+    SCENE03B,
     SCENE03_1,
     SCENE03_2,
     SCENE04,
@@ -70,7 +71,7 @@ typedef struct {
 Choice choicesNull[1] = {
     {   
         .required_flag          = 0,
-        {NULL}
+        .commands               = {NULL}
     }
 };
 
@@ -83,13 +84,14 @@ Choice choicesTitle[2] = {
         .message_if_unset       = message00001,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = SCENE01,
+//        .next_sceneId_if_unset  = ENDING,
         .message_if_set         = NULL,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = NOSCENE
     },
     {   
         .required_flag          = 0,
-        {NULL}
+        .commands               = {NULL}
     }
 };
 
@@ -315,7 +317,22 @@ Scene scene030 = {
     .sceneId                = SCENE03,
     .flag_to_check          = FLAG_FAIL_APPLE,
     .next_sceneId_if_unset  = SCENE03_1,
-    .next_sceneId_if_set    = SCENE03_2,
+    .next_sceneId_if_set    = SCENE03B,
+    .graphic_bank           = 0,
+    .graphic_ptn0           = NULL,
+    .graphic_ptn1           = NULL,
+    .graphic_col0           = NULL,
+    .graphic_col1           = NULL,
+    .message                = NULL,
+    .choices                = choicesNull
+};
+
+
+Scene scene03B = {
+    .sceneId                = SCENE03B,
+    .flag_to_check          = FLAG_HAVE_APPLE,
+    .next_sceneId_if_unset  = SCENE03_2,
+    .next_sceneId_if_set    = SCENE03_1,
     .graphic_bank           = 0,
     .graphic_ptn0           = NULL,
     .graphic_ptn1           = NULL,
@@ -1187,6 +1204,7 @@ Scene *scenes[SCENE_NUM] = {
     scene010,
     scene020,
     scene030,
+    scene03B,
     scene031,
     scene032,
     scene040,

@@ -5,6 +5,22 @@
 #define BEEP                0x00c0
 #define VRAM_PTN_NAME_TBL1  0x1800
 
+
+EXTERN SOUNDDRV_INIT
+EXTERN SOUNDDRV_EXEC
+EXTERN SOUNDDRV_BGMPLAY
+EXTERN SOUNDDRV_SFXPLAY
+EXTERN SOUNDDRV_STOP
+EXTERN SOUNDDRV_PAUSE
+EXTERN SOUNDDRV_RESUME
+EXTERN SOUNDDRV_STATE
+
+EXTERN _MUSIC_TITLE
+EXTERN _MUSIC_OVER
+EXTERN _MUSIC_ENDING
+EXTERN _SE_01
+
+
 SECTION code_user
 
 PUBLIC _put_message
@@ -52,7 +68,10 @@ _put_message_L1:
     jr      z, _put_message_exit    ; 0x00 = end of data
 
     cp      0x01
-    jr      z, effects_0            ; 0x01 = effects
+    jr      z, play_music           ; 0x01 = effects(music)
+
+    cp      0x02
+    jr      z, play_se              ; 0x02 = effects(se)
 
     cp      0x0a
     jr      z, _put_message_L2      ; 0x0a = line feed
@@ -96,20 +115,69 @@ _put_message_exit:
 
 
 ; ============================================================
-; effects sub
+; effects sub (music)
 ; ============================================================
-effects_0:
+play_music:
+    push    hl
+    call    music_select
+    call    SOUNDDRV_BGMPLAY
+
+play_music_1:
+    ld      a, (SOUNDDRV_STATE)
+    or      a
+    jr      nz, play_music_1
+
+play_music_exit:
+    pop     hl
+    jr      _put_message_L1
+
+
+; ============================================================
+; effects sub (se)
+; ============================================================
+play_se:
+    push    hl
+    call    music_select
+    call    SOUNDDRV_SFXPLAY
+
+play_se_exit:
+    pop     hl
+    jr      _put_message_L1
+
+
+music_select:
     ld      a, (de)
     inc     de
 
-    or      a
-    jr      nz, effects_exit
+    dec     a
+    jr      z, music_select_1
 
-; PLAY MUSIC1
-    nop
+    dec     a
+    jr      z, music_select_2
 
-effects_exit:
-    jp      _put_message_L1
+    dec     a
+    jr      z, music_select_3
+
+    dec     a
+    jr      z, music_select_4
+
+    ret
+
+music_select_1:
+    ld      hl, _MUSIC_TITLE
+    ret
+
+music_select_2:
+    ld      hl, _MUSIC_OVER
+    ret
+
+music_select_3:
+    ld      hl, _MUSIC_ENDING
+    ret
+
+music_select_4:
+    ld      hl, _SE_01
+    ret
 
 
 ; ============================================================
