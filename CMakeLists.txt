@@ -17,9 +17,7 @@ add_source_files(
     ./src/asm/music.asm
     ./src/asm/resource.asm
     ./src/asm/unpack.asm
-    ./src/asm/switch_bank.asm
-    ./src/asm/message.asm
-    ./src/asm/key.asm
+    ./src/asm/asmsub.asm
     ./src/c/main.c
 )
 

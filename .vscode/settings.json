@@ -3,6 +3,8 @@
     "files.associations": {
         "*.asm": "asm-collection",
         "system_error": "c",
-        "sstream": "c"
+        "sstream": "c",
+        "stdint.h": "c",
+        "string.h": "c"
     }
 }

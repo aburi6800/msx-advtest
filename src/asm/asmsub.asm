@@ -1,10 +1,14 @@
 ; license:MIT License
 ; copyright-holders:aburi6800 (Hitoshi Iwai)
 
-#define MSX_WRTVRM          0x004d
-#define BEEP                0x00c0
-#define VRAM_PTN_NAME_TBL1  0x1800
+#define MSX_WRTVRM              0x004d
+#define MSX_GTTRIG              0x00d8
+#define MSX_CHSNS               0x009c
+#define MSX_CHGET               0x009f
+#define MSX_KILBUF              0x0156
 
+#define VRAM_PTN_NAME_TBL1      0x1800
+#define JIFFY                   0xfc9e
 
 EXTERN SOUNDDRV_INIT
 EXTERN SOUNDDRV_EXEC
@@ -21,18 +25,23 @@ EXTERN _MUSIC_ENDING
 EXTERN _SE_01
 
 
-SECTION code_user
 
 PUBLIC _put_message
 PUBLIC _clear_message
+PUBLIC _getkeycode
+PUBLIC _keywait
+PUBLIC _switch_bank
+
+
+SECTION code_user
 
 
 ; ============================================================
 ; void put_message(void *dist_addr, void *value_addr) __naked;
 ;
-; enter : uint8_t   Write start position (x)
-;         uint8_t   Write start position (y)
-;         uint16_t  first address of display string data
+; enter : uint8_t/c     Write start position (x)
+;         uint8_t/b     Write start position (y)
+;         uint16_t/de   first address of display string data
 ; exit  : void
 ; ============================================================
 _put_message:
@@ -48,6 +57,7 @@ _put_message:
     inc     hl      
     ld      c, (hl) ; get arg1 value
 
+_put_message_L0:
     ld      h, 0
     ld      l, b
     add     hl, hl  ; hl = hl * 2
@@ -93,6 +103,21 @@ _put_message_L2:
     ld      a, 0b11100000
     and     l
     ld      l, a
+
+    ld      a, h
+    cp      0x1a
+    jr      nz, _put_message_L1
+
+    ld      a, l
+    cp      0xe0
+    jr      nz, _put_message_L1
+
+    ld      a, 0x3c
+    call    timewait
+    call    _keywait
+
+    ld      h, 0x1a
+    ld      l, 0x20
 
     jr      _put_message_L1
 
@@ -142,7 +167,7 @@ play_se:
 
 play_se_exit:
     pop     hl
-    jr      _put_message_L1
+    jp      _put_message_L1
 
 
 music_select:
@@ -190,9 +215,11 @@ _clear_message:
     ld      hl, VRAM_PTN_NAME_TBL1 + (16 * 32)
     ld      a, 0x20
     ld      b, 8    ; 8 lines
+
 _clear_message_L1:
     push    bc
     ld      b, 32   ; 32 columns
+
 _clear_message_L2:
     call    MSX_WRTVRM
     inc     hl
@@ -200,5 +227,111 @@ _clear_message_L2:
 
     pop     bc
     djnz    _clear_message_L1
+
 _clear_message_exit:
     ret
+
+
+; ============================================================
+; uint8_t getkeycode() __naked;
+;
+; enter : void
+; exit  : uint8_t       key code
+; ============================================================
+_getkeycode:
+    call    MSX_KILBUF
+    call    MSX_CHGET
+    ld      h, a    ; return parameter
+    ld      l, 0
+
+_getkeycode_exit:
+    ret
+
+
+; ============================================================
+; void keywait() __naked;
+;
+; enter : void
+; exit  : void
+; ============================================================
+_keywait:
+    push    bc
+    push    de
+    push    hl
+
+    ld      a, 0x3c
+    call    timewait
+
+    ld      c, 20                   ; write start position (x)
+    ld      b, 23                   ; write start position (y)
+    ld      de, _WAAT_MESSAGE_TEXT  ; first address of display string data
+    call    _put_message_L0
+
+    call    MSX_KILBUF
+
+_keywait_L1:
+    ld      a, 0    ; 0 = keyboard
+    call    MSX_GTTRIG
+    or      a
+    jp      z, _keywait_L1
+
+    call    _clear_message
+
+_keywait_exit:
+    pop     hl
+    pop     de
+    pop     bc
+    ret
+
+
+; ============================================================
+; timewait
+;
+; enter : a             Write time(1/60 second increments)
+; exit  : void
+; ============================================================
+timewait:
+    ld      b, a
+
+    xor     a
+    ld      (JIFFY), a
+
+timewait_L1:
+    ld      a, (JIFFY)
+    cp      b
+    jr      nz, timewait_L1
+
+    ret
+
+
+; ============================================================
+; keyboard buffer check
+; ============================================================
+buffer_chk:
+    call    MSX_CHSNS
+    jp      nz, _getkeycode
+    ret
+
+
+; ============================================================
+; void switch_bank(void *bank_no) __naked;
+;
+; enter : uint8_t/a     switch bank no
+; exit  : void
+; ============================================================
+
+_switch_bank:
+    ld      hl, 2
+    add     hl, sp
+    ld      a, (hl)     ; get arg value
+
+_switch_bank_1:
+    ld      hl, 0x7000  ; ASCII16 Mapper control port(0x8000～0x8fff)
+    ld      (hl), a
+    ret
+
+
+SECTION rodata_user
+
+_WAAT_MESSAGE_TEXT:
+    db      0x5b, 0x50, 0x55, 0x53, 0x48, 0x20, 0x53, 0x50, 0x41, 0x43, 0x45, 0x5d, 0x00

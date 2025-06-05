@@ -9,6 +9,11 @@ extern uint8_t TITLE_PTN_BLK1[];
 extern uint8_t TITLE_COL_BLK0[];
 extern uint8_t TITLE_COL_BLK1[];
 
+extern uint8_t PLLG_PTN_BLK0[];
+extern uint8_t PLLG_PTN_BLK1[];
+extern uint8_t PLLG_COL_BLK0[];
+extern uint8_t PLLG_COL_BLK1[];
+
 extern uint8_t OVER_PTN_BLK0[];
 extern uint8_t OVER_PTN_BLK1[];
 extern uint8_t OVER_COL_BLK0[];

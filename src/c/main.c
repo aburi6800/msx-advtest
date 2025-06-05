@@ -100,7 +100,6 @@ void input_command()
         }
 
         // カーソルキーは無視する
-//        if (key_buffer == 0x1c || key_buffer == 0x1d || key_buffer == 0x1e || key_buffer == 0x1f) {
         if (key_buffer >= 0x1c && key_buffer <= 0x1f) {
             continue;
         }
@@ -193,18 +192,13 @@ void run_scene(SceneId start_scene_id)
                 put_message(0, 17, scene->message);
 
                 if (scene->sceneId == OVER) {
-                    // ゲームオーバーの場合、キー入力を待ち、処理を終了する
-                    put_message((31 - sizeof(waitMessage)), PROMPT_LINE, waitMessage);
-                    keywait();
-                    clear_message();
+                    // ゲームオーバーの場合、処理を終了する
                     end_flg = true;
                 }
 
                 if (scene->next_sceneId_if_unset != NOSCENE) {
                     // 次シーンの設定のみが行われている場合、キー入力を待ち、シーンを変更する
-                    put_message((31 - sizeof(waitMessage)), PROMPT_LINE, waitMessage);
                     keywait();
-                    clear_message();
                     scene_idx = getSceneIdx(scene->next_sceneId_if_unset);
                 }
             }
@@ -257,9 +251,7 @@ void run_scene(SceneId start_scene_id)
                             // シーン遷移
                             if (choice.next_sceneId_if_set) {
                                 if (choice.message_if_set != NULL) {
-                                    put_message((32 - sizeof(waitMessage)), 23, waitMessage);
                                     keywait();
-                                    clear_message();
                                 }
                                 scene_idx = getSceneIdx(choice.next_sceneId_if_set);
                             }
@@ -277,9 +269,7 @@ void run_scene(SceneId start_scene_id)
                             // シーン遷移
                             if (choice.next_sceneId_if_unset) {
                                 if (choice.message_if_unset != NULL) {
-                                    put_message((32 - sizeof(waitMessage)), 23, waitMessage);
                                     keywait();
-                                    clear_message();
                                 }
                                 scene_idx = getSceneIdx(choice.next_sceneId_if_unset);
                             }

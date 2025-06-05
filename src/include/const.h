@@ -28,8 +28,10 @@
 #define VRAM_HEIGHT             24      // 画面高さ
 
 // MSX BIOS
+#define MSX_WRTVRM              0x004d  // VRAMデータ書き込み
 #define MSX_CHSNS               0x009c  // キーボード・バッファの状態をチェック
 #define MSX_CHGET               0x009f  // 1文字入力(入力待ちあり)
+#define MSX_GTTRIG              0x00d8  // トリガボタンの状態取得
 #define MSX_KILBUF              0x0156  // キーボード・バッファをクリア
 
 // MSX WORKAREA

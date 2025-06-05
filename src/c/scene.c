@@ -7,13 +7,14 @@
 
 
 // シーン数
-#define SCENE_NUM 21
+#define SCENE_NUM 22
 
 
 // シーンIDの列挙型
 typedef enum {
     NOSCENE,
     TITLE,
+    PROLOGUE,
     SCENE01,
     SCENE02,
     SCENE03,
@@ -81,10 +82,11 @@ Choice choicesTitle[2] = {
         .required_flag          = 0,
         .commands               = {"START", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message00001,
+//        .message_if_unset       = message00001,
+        .message_if_unset       = NULL,
         .set_flag_if_unset      = 0,
-        .next_sceneId_if_unset  = SCENE01,
-//        .next_sceneId_if_unset  = ENDING,
+//        .next_sceneId_if_unset  = SCENE01,
+        .next_sceneId_if_unset  = PROLOGUE,
         .message_if_set         = NULL,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = NOSCENE
@@ -108,6 +110,22 @@ Scene sceneTitle = {
     .message                = message00000,
     .choices                = choicesTitle
 };
+
+
+Scene scenePrologue = {
+    .sceneId                = PROLOGUE,
+    .flag_to_check          = 0,
+    .next_sceneId_if_unset  = SCENE01,
+    .next_sceneId_if_set    = NOSCENE,
+    .graphic_bank           = 1,
+    .graphic_ptn0           = PLLG_PTN_BLK0,
+    .graphic_ptn1           = PLLG_PTN_BLK1,
+    .graphic_col0           = PLLG_COL_BLK0,
+    .graphic_col1           = PLLG_COL_BLK1,
+    .message                = message97000,
+    .choices                = choicesNull
+};
+
 
 Scene sceneOver = {
     .sceneId                = OVER,
@@ -1201,6 +1219,7 @@ Scene *scenes[SCENE_NUM] = {
     sceneTitle,
     sceneOver,
     sceneEnding,
+    scenePrologue,
     scene010,
     scene020,
     scene030,

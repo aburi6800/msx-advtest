@@ -2,6 +2,7 @@
 ; copyright-holders:aburi6800 (Hitoshi Iwai)
 
 PUBLIC _TITLE_PTN_BLK0, _TITLE_PTN_BLK1, _TITLE_COL_BLK0, _TITLE_COL_BLK1
+PUBLIC _PLLG_PTN_BLK0, _PLLG_PTN_BLK1, _PLLG_COL_BLK0, _PLLG_COL_BLK1
 PUBLIC _OVER_PTN_BLK0, _OVER_PTN_BLK1, _OVER_COL_BLK0, _OVER_COL_BLK1
 PUBLIC _ENDING_PTN_BLK0, _ENDING_PTN_BLK1, _ENDING_COL_BLK0, _ENDING_COL_BLK1
 
@@ -29,6 +30,15 @@ _TITLE_COL_BLK0:
 INCBIN "../../resources/bank01/title_col_blk0.plet5"
 _TITLE_COL_BLK1:
 INCBIN "../../resources/bank01/title_col_blk1.plet5"
+
+_PLLG_PTN_BLK0:
+INCBIN "../../resources/bank01/pllg_ptn_blk0.plet5"
+_PLLG_PTN_BLK1:
+INCBIN "../../resources/bank01/pllg_ptn_blk1.plet5"
+_PLLG_COL_BLK0:
+INCBIN "../../resources/bank01/pllg_col_blk0.plet5"
+_PLLG_COL_BLK1:
+INCBIN "../../resources/bank01/pllg_col_blk1.plet5"
 
 _OVER_PTN_BLK0:
 INCBIN "../../resources/bank01/over_ptn_blk0.plet5"
