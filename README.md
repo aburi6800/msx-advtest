@@ -16,12 +16,13 @@
 ## Overview
 
 - A retro-style adventure game played by entering commands from the keyboard.  
-  The goal is to escape the dungeon.  
+  The objective is to escape from the dungeon by overcoming numerous ordeals.  
 - Commands are entered in English, verb + noun.  
   Example : LOOK ROOM、OPEN DOOR  
 - When moving, specify the direction as FORWARD (front), BACK (back), LEFT (left), or RIGHT (right).  
   Only the first letter is acceptable.  
   Example : GO FORWARD、LEFT、R  
+- Note that you can confirm the above explanation by putting `HELP` in the game.  
 
 <br>
 

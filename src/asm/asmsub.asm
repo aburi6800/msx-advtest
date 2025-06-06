@@ -30,6 +30,7 @@ PUBLIC _put_message
 PUBLIC _clear_message
 PUBLIC _getkeycode
 PUBLIC _keywait
+PUBLIC _buffer_check
 PUBLIC _switch_bank
 
 
@@ -57,7 +58,7 @@ _put_message:
     inc     hl      
     ld      c, (hl) ; get arg1 value
 
-_put_message_L0:
+put_message:
     ld      h, 0
     ld      l, b
     add     hl, hl  ; hl = hl * 2
@@ -70,12 +71,12 @@ _put_message_L0:
     add     hl, bc
     add     hl, VRAM_PTN_NAME_TBL1
 
-_put_message_L1:
+put_message_L1:
     ld      a, (de)
     inc     de
 
     or      a
-    jr      z, _put_message_exit    ; 0x00 = end of data
+    jr      z, put_message_exit     ; 0x00 = end of data
 
     cp      0x01
     jr      z, play_music           ; 0x01 = effects(music)
@@ -84,18 +85,18 @@ _put_message_L1:
     jr      z, play_se              ; 0x02 = effects(se)
 
     cp      0x0a
-    jr      z, _put_message_L2      ; 0x0a = line feed
+    jr      z, put_message_L2       ; 0x0a = line feed
 
     cp      0xde
-    jr      z, _put_message_L3      ; 0xde = dakuten
+    jr      z, put_message_L3       ; 0xde = dakuten
 
     cp      0xdf
-    jr      z, _put_message_L3      ; 0xdf = handakuten
+    jr      z, put_message_L3       ; 0xdf = handakuten
 
-    call    _put_message_L4
-    jr      _put_message_L1
+    call    put_message_L4
+    jr      put_message_L1
 
-_put_message_L2:
+put_message_L2:
     ld      bc, 32
     adc     hl, bc
     adc     hl, bc
@@ -106,36 +107,34 @@ _put_message_L2:
 
     ld      a, h
     cp      0x1a
-    jr      nz, _put_message_L1
+    jr      nz, put_message_L1
 
     ld      a, l
     cp      0xe0
-    jr      nz, _put_message_L1
+    jr      nz, put_message_L1
 
-    ld      a, 0x3c
-    call    timewait
-    call    _keywait
+    call    keywait
 
     ld      h, 0x1a
     ld      l, 0x20
 
-    jr      _put_message_L1
+    jr      put_message_L1
 
-_put_message_L3:
+put_message_L3:
     ld      bc, 32 + 1
     sbc     hl, bc
 
-    call    _put_message_L4
+    call    put_message_L4
 
     add     hl, bc
     dec     hl
-    jr      _put_message_L1
+    jr      put_message_L1
 
-_put_message_L4:
+put_message_L4:
     call    MSX_WRTVRM
     inc     hl
 
-_put_message_exit:
+put_message_exit:
     ret
 
 
@@ -147,14 +146,14 @@ play_music:
     call    music_select
     call    SOUNDDRV_BGMPLAY
 
-play_music_1:
+play_music_L1:
     ld      a, (SOUNDDRV_STATE)
     or      a
-    jr      nz, play_music_1
+    jr      nz, play_music_L1
 
 play_music_exit:
     pop     hl
-    jr      _put_message_L1
+    jr      put_message_L1
 
 
 ; ============================================================
@@ -167,7 +166,7 @@ play_se:
 
 play_se_exit:
     pop     hl
-    jp      _put_message_L1
+    jp      put_message_L1
 
 
 music_select:
@@ -212,23 +211,24 @@ music_select_4:
 ; exit  : void
 ; ============================================================
 _clear_message:
+clear_message:
     ld      hl, VRAM_PTN_NAME_TBL1 + (16 * 32)
     ld      a, 0x20
     ld      b, 8    ; 8 lines
 
-_clear_message_L1:
+clear_message_L1:
     push    bc
     ld      b, 32   ; 32 columns
 
-_clear_message_L2:
+clear_message_L2:
     call    MSX_WRTVRM
     inc     hl
-    djnz    _clear_message_L2
+    djnz    clear_message_L2
 
     pop     bc
-    djnz    _clear_message_L1
+    djnz    clear_message_L1
 
-_clear_message_exit:
+clear_message_exit:
     ret
 
 
@@ -239,6 +239,7 @@ _clear_message_exit:
 ; exit  : uint8_t       key code
 ; ============================================================
 _getkeycode:
+getkeycode:
     call    MSX_KILBUF
     call    MSX_CHGET
     ld      h, a    ; return parameter
@@ -255,29 +256,32 @@ _getkeycode_exit:
 ; exit  : void
 ; ============================================================
 _keywait:
+keywait:
     push    bc
     push    de
     push    hl
 
-    ld      a, 0x3c
+    ld      a, 0x20
     call    timewait
 
     ld      c, 20                   ; write start position (x)
     ld      b, 23                   ; write start position (y)
     ld      de, _WAAT_MESSAGE_TEXT  ; first address of display string data
-    call    _put_message_L0
+    call    put_message
 
-    call    MSX_KILBUF
+    call    buffer_check
 
-_keywait_L1:
-    ld      a, 0    ; 0 = keyboard
+keywait_L1:
+    ld      a, 0                    ; 0 = keyboard
     call    MSX_GTTRIG
     or      a
-    jp      z, _keywait_L1
+    jp      z, keywait_L1
 
-    call    _clear_message
+    call    clear_message
+    ld      a, $0a
+    call    timewait
 
-_keywait_exit:
+keywait_exit:
     pop     hl
     pop     de
     pop     bc
@@ -290,6 +294,11 @@ _keywait_exit:
 ; enter : a             Write time(1/60 second increments)
 ; exit  : void
 ; ============================================================
+_timewait:
+    ld      hl, 2
+    add     hl, sp
+    ld      a, (hl)     ; get arg value
+
 timewait:
     ld      b, a
 
@@ -305,16 +314,21 @@ timewait_L1:
 
 
 ; ============================================================
-; keyboard buffer check
+; void buffer_check() __naked;
+;
+; enter : void
+; exit  : void
 ; ============================================================
-buffer_chk:
+_buffer_check:
+buffer_check:
     call    MSX_CHSNS
-    jp      nz, _getkeycode
-    ret
+    ret     z
+    call    MSX_CHGET
+    jr      _buffer_check
 
 
 ; ============================================================
-; void switch_bank(void *bank_no) __naked;
+; void switch_bank(uint8_t bank_no) __naked;
 ;
 ; enter : uint8_t/a     switch bank no
 ; exit  : void
@@ -325,7 +339,7 @@ _switch_bank:
     add     hl, sp
     ld      a, (hl)     ; get arg value
 
-_switch_bank_1:
+switch_bank:
     ld      hl, 0x7000  ; ASCII16 Mapper control port(0x8000～0x8fff)
     ld      (hl), a
     ret

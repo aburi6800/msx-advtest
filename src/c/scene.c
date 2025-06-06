@@ -7,7 +7,7 @@
 
 
 // シーン数
-#define SCENE_NUM 22
+#define SCENE_NUM 23
 
 
 // シーンIDの列挙型
@@ -15,6 +15,7 @@ typedef enum {
     NOSCENE,
     TITLE,
     PROLOGUE,
+    DESCRIPTION,
     SCENE01,
     SCENE02,
     SCENE03,
@@ -82,7 +83,6 @@ Choice choicesTitle[2] = {
         .required_flag          = 0,
         .commands               = {"START", NULL},
         .flag_to_check          = 0,
-//        .message_if_unset       = message00001,
         .message_if_unset       = NULL,
         .set_flag_if_unset      = 0,
 //        .next_sceneId_if_unset  = SCENE01,
@@ -112,10 +112,39 @@ Scene sceneTitle = {
 };
 
 
+Choice choicesPrologue[3] = {
+    {   
+        .required_flag          = 0,
+        .commands               = {"Y", NULL},
+        .flag_to_check          = 0,
+        .message_if_unset       = NULL,
+        .set_flag_if_unset      = 0,
+        .next_sceneId_if_unset  = DESCRIPTION,
+        .message_if_set         = NULL,
+        .set_flag_if_set        = 0,
+        .next_sceneId_if_set    = NOSCENE
+    },
+    {   
+        .required_flag          = 0,
+        .commands               = {"N", NULL},
+        .flag_to_check          = 0,
+        .message_if_unset       = NULL,
+        .set_flag_if_unset      = 0,
+        .next_sceneId_if_unset  = SCENE01,
+        .message_if_set         = NULL,
+        .set_flag_if_set        = 0,
+        .next_sceneId_if_set    = NOSCENE
+    },
+    {   
+        .required_flag          = 0,
+        .commands               = {NULL}
+    }
+};
+
 Scene scenePrologue = {
     .sceneId                = PROLOGUE,
     .flag_to_check          = 0,
-    .next_sceneId_if_unset  = SCENE01,
+    .next_sceneId_if_unset  = NOSCENE,
     .next_sceneId_if_set    = NOSCENE,
     .graphic_bank           = 1,
     .graphic_ptn0           = PLLG_PTN_BLK0,
@@ -123,6 +152,21 @@ Scene scenePrologue = {
     .graphic_col0           = PLLG_COL_BLK0,
     .graphic_col1           = PLLG_COL_BLK1,
     .message                = message97000,
+    .choices                = choicesPrologue
+};
+
+
+Scene sceneDescription = {
+    .sceneId                = DESCRIPTION,
+    .flag_to_check          = 0,
+    .next_sceneId_if_unset  = SCENE01,
+    .next_sceneId_if_set    = NOSCENE,
+    .graphic_bank           = 1,
+    .graphic_ptn0           = NULL,
+    .graphic_ptn1           = NULL,
+    .graphic_col0           = NULL,
+    .graphic_col1           = NULL,
+    .message                = messagehelp,
     .choices                = choicesNull
 };
 
@@ -1220,6 +1264,7 @@ Scene *scenes[SCENE_NUM] = {
     sceneOver,
     sceneEnding,
     scenePrologue,
+    sceneDescription,
     scene010,
     scene020,
     scene030,
