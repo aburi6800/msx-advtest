@@ -20,8 +20,14 @@ convert_map = {
     'P' : 0x50, 'Q' : 0x51, 'R' : 0x52, 'S' : 0x53, 'T' : 0x54, 
     'U' : 0x55, 'V' : 0x56, 'W' : 0x57, 'X' : 0x58, 'Y' : 0x59, 
     'Z' : 0x5A, 
-    '[' : 0x5B, '\\': 0x5C, ']' : 0x5D, '^' : 0x5E, '_': 0x5F,
+    '[' : 0x5B, '\\': 0x5C, ']' : 0x5D, '^' : 0x5E, '_' : 0x5F,
     '`' : 0x60, 
+    'a' : 0x61, 'b' : 0x62, 'c' : 0x63, 'd' : 0x64, 'e' : 0x65,
+    'f' : 0x66, 'g' : 0x67, 'h' : 0x68, 'i' : 0x69, 'j' : 0x6A,
+    'k' : 0x6B, 'l' : 0x6C, 'm' : 0x6D, 'n' : 0x6E, 'o' : 0x6F,
+    'p' : 0x70, 'q' : 0x71, 'r' : 0x72, 's' : 0x73, 't' : 0x74,
+    'u' : 0x75, 'v' : 0x76, 'w' : 0x77, 'x' : 0x78, 'y' : 0x79,
+    'z' : 0x7A,
     'を': 0x86, 
     'ぁ': 0x87, 'ぃ': 0x88, 'ぅ': 0x89, 'ぇ': 0x8A, 'ぉ': 0x8B,
     'ゃ': 0x8C, 'ゅ': 0x8D, 'ょ': 0x8E, 'っ': 0x8F,
@@ -55,7 +61,8 @@ convert_map = {
 
 def convert_char(c):
     # 正規化で濁点・半濁点を分離
-    normalized = unicodedata.normalize('NFKD', c.upper())
+#    normalized = unicodedata.normalize('NFKD', c.upper())
+    normalized = unicodedata.normalize('NFKD', c)
 
     result = []
     for ch in normalized:
@@ -79,7 +86,7 @@ def format_as_c_array(byte_array, name="str"):
 # 実行エントリーポイント
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("使い方: python msx_encode.py 'こんにちは、MSX！'")
+        print("使い方: python msx_encode.py 'ようこそ、MSX World！'")
         sys.exit(1)
 
     input_text = sys.argv[1]
