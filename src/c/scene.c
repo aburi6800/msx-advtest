@@ -1057,7 +1057,7 @@ Choice choices061[8] = {
     },
     {
         .required_flag          = 0,
-        .commands               = {"LOOK SKARF", NULL},
+        .commands               = {"LOOK SCARF", NULL},
         .flag_to_check          = FLAG_LOOK_SKELETON,
         .message_if_unset       = MESSAGE06107,
         .set_flag_if_unset      = FLAG_LOOK_SKELETON,
@@ -1068,7 +1068,7 @@ Choice choices061[8] = {
     },
     {
         .required_flag          = 0,
-        .commands               = {"GET SKARF", "TAKE SKARF", NULL},
+        .commands               = {"GET SCARF", "TAKE SCARF", NULL},
         .flag_to_check          = 0,
         .message_if_unset       = MESSAGE06108,
         .set_flag_if_unset      = 0,
@@ -1155,7 +1155,7 @@ Choice choices062[8] = {
     },
     {
         .required_flag          = 0,
-        .commands               = {"LOOK SKARF", NULL},
+        .commands               = {"LOOK SCARF", NULL},
         .flag_to_check          = 0,
         .message_if_unset       = MESSAGE06204,
         .set_flag_if_unset      = 0,
@@ -1166,7 +1166,7 @@ Choice choices062[8] = {
     },
     {
         .required_flag          = 0,
-        .commands               = {"GET SKARF", "TAKE SKARF", NULL},
+        .commands               = {"GET SCARF", "TAKE SCARF", NULL},
         .flag_to_check          = FLAG_HAVE_SKARF,
         .message_if_unset       = MESSAGE06205,
         .set_flag_if_unset      = FLAG_HAVE_SKARF,
@@ -1185,7 +1185,7 @@ Scene scene062 = {
     .flag_to_check          = 0,
     .next_sceneId_if_unset  = NULL,
     .next_sceneId_if_set    = NULL,
-    .graphic_bank           = 1,
+    .graphic_bank           = 3,
     .graphic_ptn0           = SC062_PTN_BLK0,
     .graphic_ptn1           = SC062_PTN_BLK1,
     .graphic_col0           = SC062_COL_BLK0,
@@ -1261,7 +1261,7 @@ Scene scene070 = {
     .flag_to_check          = 0,
     .next_sceneId_if_unset  = NULL,
     .next_sceneId_if_set    = NULL,
-    .graphic_bank           = 4,
+    .graphic_bank           = 1,
     .graphic_ptn0           = SC070_PTN_BLK0,
     .graphic_ptn1           = SC070_PTN_BLK1,
     .graphic_col0           = SC070_COL_BLK0,
