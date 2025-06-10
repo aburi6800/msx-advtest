@@ -116,7 +116,10 @@ put_message_L2:
     jr      z, play_music           ; 0x01 = effects(music)
 
     cp      0x02
-    jr      z, play_se              ; 0x02 = effects(se)
+    jr      z, play_music_nowait    ; 0x02 = effects(music_nowait)
+
+    cp      0x03
+    jp      z, play_se              ; 0x03 = effects(se)
 
     cp      0x0a
     jr      z, put_message_L3       ; 0x0a = line feed
@@ -218,7 +221,7 @@ _put_message_direct:
     ld      c, (hl) ; get arg1 value
 
 put_message_direct:
-    jr      put_message_L1
+    jp      put_message_L1
 
 
 ; ============================================================
@@ -228,6 +231,7 @@ play_music:
     push    hl
     call    music_select
     push    de
+    call    SOUNDDRV_STOP
     call    SOUNDDRV_BGMPLAY
 
 play_music_L1:
@@ -238,7 +242,23 @@ play_music_L1:
 play_music_exit:
     pop     de
     pop     hl
-    jr      put_message_L2
+    jp      put_message_L2
+
+
+; ============================================================
+; effects sub (music_nowait)
+; ============================================================
+play_music_nowait:
+    push    hl
+    call    music_select
+    push    de
+
+    call    SOUNDDRV_BGMPLAY
+
+play_music_nowait_exit:
+    pop     de
+    pop     hl
+    jp      put_message_L2
 
 
 ; ============================================================
