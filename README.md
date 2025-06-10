@@ -3,13 +3,13 @@
 ---
 # Dungeon Adventure for MSX
 
-<img src="images/title.png">
+<img src="images/title_e.png">
 
 <br>
 
 ## Online Play
 
-[Play on WebMSX](https://webmsx.org/?MACHINE=MSX1J&ROM=https://github.com/aburi6800/msx-advtest/raw/refs/heads/main/dist/advtest.rom&ROM_FORMAT=ASCII16&FAST_BOOT)
+[Play on WebMSX](https://webmsx.org/?MACHINE=MSX1A&ROM=https://github.com/aburi6800/msx-advtest/raw/refs/heads/main/dist/advtest.rom&ROM_FORMAT=ASCII16&FAST_BOOT)
 
 <br>
 
