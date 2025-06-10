@@ -2,12 +2,26 @@
 // copyright-holders:aburi6800 (Hitoshi Iwai)
 
 #include "../include/resource.h"
-#include "./message.c"
-#include "./flag.c"
-
 
 // シーン数
 #define SCENE_NUM 23
+
+// フラグ定義
+#define FLAG_FOUND_KEY      0b0000000000000001    // 鍵を見つけた
+#define FLAG_HAVE_KEY       0b0000000000000010    // 鍵を手に入れた
+#define FLAG_OPEN_DOOR      0b0000000000000100    // ドアを開けた
+#define FLAG_FAIL_APPLE     0b0000000000001000    // リンゴが落ちた
+#define FLAG_HAVE_APPLE     0b0000000000010000    // リンゴを手に入れた
+#define FLAG_LOOK_SNAKE     0b0000000000100000    // ヘビを見た
+#define FLAG_KILL_SNAKE     0b0000000001000000    // ヘビを倒した
+#define FLAG_HAVE_SWORD     0b0000000010000000    // 剣を取った
+#define FLAG_PULL_SWORD     0b0000000100000000    // 剣を抜こうとした
+#define FLAG_BROKEN_SWORD   0b0000001000000000    // 剣を折った
+#define FLAG_LOOK_SKELETON  0b0000010000000000    // スケルトンを倒した
+#define FLAG_KILL_SKELETON  0b0000100000000000    // スケルトンを倒した
+#define FLAG_HAVE_SKARF     0b0001000000000000    // スカーフを手に入れた
+#define FLAG_EQUIP_SWORD    0b0010000000000000    // 剣を構えた
+#define FLAG_POLISH_PILLER  0b0100000000000000    // 柱を拭いた
 
 
 // シーンIDの列挙型
@@ -85,7 +99,6 @@ Choice choicesTitle[2] = {
         .flag_to_check          = 0,
         .message_if_unset       = NULL,
         .set_flag_if_unset      = 0,
-//        .next_sceneId_if_unset  = SCENE01,
         .next_sceneId_if_unset  = PROLOGUE,
         .message_if_set         = NULL,
         .set_flag_if_set        = 0,
@@ -107,7 +120,7 @@ Scene sceneTitle = {
     .graphic_ptn1           = TITLE_PTN_BLK1,
     .graphic_col0           = TITLE_COL_BLK0,
     .graphic_col1           = TITLE_COL_BLK1,
-    .message                = message00000,
+    .message                = MESSAGE00000,
     .choices                = choicesTitle
 };
 
@@ -151,7 +164,7 @@ Scene scenePrologue = {
     .graphic_ptn1           = PLLG_PTN_BLK1,
     .graphic_col0           = PLLG_COL_BLK0,
     .graphic_col1           = PLLG_COL_BLK1,
-    .message                = message97000,
+    .message                = MESSAGE97000,
     .choices                = choicesPrologue
 };
 
@@ -166,7 +179,7 @@ Scene sceneDescription = {
     .graphic_ptn1           = NULL,
     .graphic_col0           = NULL,
     .graphic_col1           = NULL,
-    .message                = messagehelp,
+    .message                = HELPMESSAGE,
     .choices                = choicesNull
 };
 
@@ -181,7 +194,7 @@ Scene sceneOver = {
     .graphic_ptn1           = OVER_PTN_BLK1,
     .graphic_col0           = OVER_COL_BLK0,
     .graphic_col1           = OVER_COL_BLK1,
-    .message                = message99000,
+    .message                = MESSAGE99000,
     .choices                = choicesNull
 };
 
@@ -196,7 +209,7 @@ Scene sceneEnding = {
     .graphic_ptn1           = ENDING_PTN_BLK1,
     .graphic_col0           = ENDING_COL_BLK0,
     .graphic_col1           = ENDING_COL_BLK1,
-    .message                = message98000,
+    .message                = MESSAGE98000,
     .choices                = choicesNull
 };
 
@@ -206,7 +219,7 @@ Choice choices010[8] = {
         .required_flag          = 0,
         .commands               = {"LOOK ROOM", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message01001,
+        .message_if_unset       = MESSAGE01001,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -217,10 +230,10 @@ Choice choices010[8] = {
         .required_flag          = 0,
         .commands               = {"LOOK TABLE", NULL},
         .flag_to_check          = FLAG_HAVE_KEY,
-        .message_if_unset       = message01002,
+        .message_if_unset       = MESSAGE01002,
         .set_flag_if_unset      = FLAG_FOUND_KEY,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message01003,
+        .message_if_set         = MESSAGE01003,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = NOSCENE
     },
@@ -228,7 +241,7 @@ Choice choices010[8] = {
         .required_flag          = FLAG_FOUND_KEY,
         .commands               = {"LOOK KEY", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message01011,
+        .message_if_unset       = MESSAGE01011,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -239,10 +252,10 @@ Choice choices010[8] = {
         .required_flag          = FLAG_FOUND_KEY,
         .commands               = {"GET KEY", "TAKE KEY", NULL},
         .flag_to_check          = FLAG_HAVE_KEY,
-        .message_if_unset       = message01004,
+        .message_if_unset       = MESSAGE01004,
         .set_flag_if_unset      = FLAG_HAVE_KEY,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message01005,
+        .message_if_set         = MESSAGE01005,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = NOSCENE
     },
@@ -250,10 +263,10 @@ Choice choices010[8] = {
         .required_flag          = 0,
         .commands               = {"LOOK DOOR", NULL},
         .flag_to_check          = FLAG_OPEN_DOOR,
-        .message_if_unset       = message01006,
+        .message_if_unset       = MESSAGE01006,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message01007,
+        .message_if_set         = MESSAGE01007,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = NOSCENE
     },
@@ -261,10 +274,10 @@ Choice choices010[8] = {
         .required_flag          = 0,
         .commands               = {"OPEN DOOR", "USE KEY", NULL},
         .flag_to_check          = FLAG_HAVE_KEY,
-        .message_if_unset       = message01008,
+        .message_if_unset       = MESSAGE01008,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message01009,
+        .message_if_set         = MESSAGE01009,
         .set_flag_if_set        = FLAG_OPEN_DOOR,
         .next_sceneId_if_set    = NOSCENE
     },
@@ -272,7 +285,7 @@ Choice choices010[8] = {
         .required_flag          = FLAG_OPEN_DOOR,
         .commands               = {"ENTER DOOR", "GO FORWARD", "FORWARD", "F", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message01010,
+        .message_if_unset       = MESSAGE01010,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = SCENE02,
         .message_if_set         = NULL,
@@ -294,7 +307,7 @@ Scene scene010 = {
     .graphic_ptn1           = SC010_PTN_BLK1,
     .graphic_col0           = SC010_COL_BLK0,
     .graphic_col1           = SC010_COL_BLK1,
-    .message                = message01000,
+    .message                = MESSAGE01000,
     .choices                = choices010
 };
 
@@ -348,7 +361,7 @@ Choice choices020[6] = {
         .required_flag          = 0,
         .commands               = {"LOOK ROOM", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message02001,
+        .message_if_unset       = MESSAGE02001,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -370,7 +383,7 @@ Scene scene020 = {
     .graphic_ptn1           = SC020_PTN_BLK1,
     .graphic_col0           = SC020_COL_BLK0,
     .graphic_col1           = SC020_COL_BLK1,
-    .message                = message02000,
+    .message                = MESSAGE02000,
     .choices                = choices020
 };
 
@@ -421,7 +434,7 @@ Choice choices031[7] = {
         .required_flag          = 0,
         .commands               = {"LOOK TREE", "LOOK ROOM", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message03101,
+        .message_if_unset       = MESSAGE03101,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -432,7 +445,7 @@ Choice choices031[7] = {
         .required_flag          = 0,
         .commands               = {"CLIMB TREE", "GO UP", "UP", "U", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message03102,
+        .message_if_unset       = MESSAGE03102,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = OVER,
         .message_if_set         = NULL,
@@ -443,10 +456,10 @@ Choice choices031[7] = {
         .required_flag          = 0,
         .commands               = {"KICK TREE", "SWING TREE", "PUSH TREE", NULL},
         .flag_to_check          = FLAG_HAVE_APPLE,
-        .message_if_unset       = message03103,
+        .message_if_unset       = MESSAGE03103,
         .set_flag_if_unset      = FLAG_FAIL_APPLE,
         .next_sceneId_if_unset  = SCENE03_2,
-        .message_if_set         = message03104,
+        .message_if_set         = MESSAGE03104,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = NOSCENE,
     },
@@ -454,7 +467,7 @@ Choice choices031[7] = {
         .required_flag          = FLAG_HAVE_APPLE,
         .commands               = {"EAT APPLE", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message03105,
+        .message_if_unset       = MESSAGE03105,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = OVER,
         .message_if_set         = NULL,
@@ -465,7 +478,7 @@ Choice choices031[7] = {
         .required_flag          = FLAG_HAVE_APPLE,
         .commands               = {"LOOK APPLE", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message03202,
+        .message_if_unset       = MESSAGE03202,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -487,7 +500,7 @@ Scene scene031 = {
     .graphic_ptn1           = SC031_PTN_BLK1,
     .graphic_col0           = SC031_COL_BLK0,
     .graphic_col1           = SC031_COL_BLK1,
-    .message                = message03100,
+    .message                = MESSAGE03100,
     .choices                = choices031
 };
 
@@ -508,7 +521,7 @@ Choice choices032[8] = {
         .required_flag          = 0,
         .commands               = {"LOOK TREE", "LOOK ROOM", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message03201,
+        .message_if_unset       = MESSAGE03201,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -519,7 +532,7 @@ Choice choices032[8] = {
         .required_flag          = 0,
         .commands               = {"CLIMB TREE", "GO UP", "UP", "U", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message03202,
+        .message_if_unset       = MESSAGE03202,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = OVER,
         .message_if_set         = NULL,
@@ -530,7 +543,7 @@ Choice choices032[8] = {
         .required_flag          = 0,
         .commands               = {"KICK TREE", "SWING TREE", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message03104,
+        .message_if_unset       = MESSAGE03104,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -541,7 +554,7 @@ Choice choices032[8] = {
         .required_flag          = 0,
         .commands               = {"LOOK APPLE", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message03202,
+        .message_if_unset       = MESSAGE03202,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -552,10 +565,10 @@ Choice choices032[8] = {
         .required_flag          = 0,
         .commands               = {"GET APPLE", "TAKE APPLE", NULL},
         .flag_to_check          = FLAG_HAVE_APPLE,
-        .message_if_unset       = message03203,
+        .message_if_unset       = MESSAGE03203,
         .set_flag_if_unset      = FLAG_HAVE_APPLE,
         .next_sceneId_if_unset  = SCENE03_1,
-        .message_if_set         = message03204,
+        .message_if_set         = MESSAGE03204,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = NOSCENE,
     },
@@ -563,7 +576,7 @@ Choice choices032[8] = {
         .required_flag          = 0,
         .commands               = {"EAT APPLE", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message03205,
+        .message_if_unset       = MESSAGE03205,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -585,7 +598,7 @@ Scene scene032 = {
     .graphic_ptn1           = SC032_PTN_BLK1,
     .graphic_col0           = SC032_COL_BLK0,
     .graphic_col1           = SC032_COL_BLK1,
-    .message                = message03200,
+    .message                = MESSAGE03200,
     .choices                = choices032
 };
 
@@ -621,7 +634,7 @@ Choice choices041[6] = {
         .required_flag          = 0,
         .commands               = {"GO FORWARD", "FORWARD", "F", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message04101,
+        .message_if_unset       = MESSAGE04101,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = OVER,
         .message_if_set         = NULL,
@@ -632,10 +645,10 @@ Choice choices041[6] = {
         .required_flag          = 0,
         .commands               = {"LOOK SNAKE", NULL},
         .flag_to_check          = FLAG_LOOK_SNAKE,
-        .message_if_unset       = message04102,
+        .message_if_unset       = MESSAGE04102,
         .set_flag_if_unset      = FLAG_LOOK_SNAKE,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message04101,
+        .message_if_set         = MESSAGE04101,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = OVER,
     },
@@ -643,7 +656,7 @@ Choice choices041[6] = {
         .required_flag          = FLAG_HAVE_APPLE,
         .commands               = {"THROW APPLE", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message04103,
+        .message_if_unset       = MESSAGE04103,
         .set_flag_if_unset      = FLAG_KILL_SNAKE,
         .next_sceneId_if_unset  = SCENE04,
         .message_if_set         = NULL,
@@ -654,7 +667,7 @@ Choice choices041[6] = {
         .required_flag          = 0,
         .commands               = {"EAT APPLE", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message03205,
+        .message_if_unset       = MESSAGE04104,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = OVER,
         .message_if_set         = NULL,
@@ -676,7 +689,7 @@ Scene scene041 = {
     .graphic_ptn1           = SC041_PTN_BLK1,
     .graphic_col0           = SC041_COL_BLK0,
     .graphic_col1           = SC041_COL_BLK1,
-    .message                = message04100,
+    .message                = MESSAGE04100,
     .choices                = choices041
 };
 
@@ -708,7 +721,7 @@ Choice choices042[5] = {
         .required_flag          = 0,
         .commands               = {"LOOK SNAKE", "LOOK BORN", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message04201,
+        .message_if_unset       = MESSAGE04201,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -719,7 +732,7 @@ Choice choices042[5] = {
         .required_flag          = 0,
         .commands               = {"GET BORN", "TAKE BORN", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message04202,
+        .message_if_unset       = MESSAGE04202,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -736,12 +749,12 @@ Scene scene042 = {
     .flag_to_check          = 0,
     .next_sceneId_if_unset  = NULL,
     .next_sceneId_if_set    = NULL,
-    .graphic_bank           = 2,
+    .graphic_bank           = 3,
     .graphic_ptn0           = SC042_PTN_BLK0,
     .graphic_ptn1           = SC042_PTN_BLK1,
     .graphic_col0           = SC042_COL_BLK0,
     .graphic_col1           = SC042_COL_BLK1,
-    .message                = message04200,
+    .message                = MESSAGE04200,
     .choices                = choices042
 };
 
@@ -792,7 +805,7 @@ Choice choices051[7] = {
         .required_flag          = 0,
         .commands               = {"LOOK ROCK", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message05101,
+        .message_if_unset       = MESSAGE05101,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -803,7 +816,7 @@ Choice choices051[7] = {
         .required_flag          = 0,
         .commands               = {"LOOK SWORD", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message05102,
+        .message_if_unset       = MESSAGE05102,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -814,10 +827,10 @@ Choice choices051[7] = {
         .required_flag          = 0,
         .commands               = {"PULL SWORD", NULL},
         .flag_to_check          = FLAG_PULL_SWORD,
-        .message_if_unset       = message05103,
+        .message_if_unset       = MESSAGE05103,
         .set_flag_if_unset      = FLAG_PULL_SWORD,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message05104,
+        .message_if_set         = MESSAGE05104,
         .set_flag_if_set        = FLAG_BROKEN_SWORD,
         .next_sceneId_if_set    = SCENE05_3,
     },
@@ -825,10 +838,10 @@ Choice choices051[7] = {
         .required_flag          = 0,
         .commands               = {"PUSH SWORD", NULL},
         .flag_to_check          = FLAG_PULL_SWORD,
-        .message_if_unset       = message05105,
+        .message_if_unset       = MESSAGE05105,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message05106,
+        .message_if_set         = MESSAGE05106,
         .set_flag_if_set        = FLAG_HAVE_SWORD,
         .next_sceneId_if_set    = SCENE05_2,
     },
@@ -836,7 +849,7 @@ Choice choices051[7] = {
         .required_flag          = 0,
         .commands               = {"MOVE ROCK", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message05107,
+        .message_if_unset       = MESSAGE05107,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -858,7 +871,7 @@ Scene scene051 = {
     .graphic_ptn1           = SC051_PTN_BLK1,
     .graphic_col0           = SC051_COL_BLK0,
     .graphic_col1           = SC051_COL_BLK1,
-    .message                = message05100,
+    .message                = MESSAGE05100,
     .choices                = choices051
 };
 
@@ -879,7 +892,7 @@ Choice choices052[4] = {
         .required_flag          = 0,
         .commands               = {"LOOK ROCK", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message05201,
+        .message_if_unset       = MESSAGE05201,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -890,7 +903,7 @@ Choice choices052[4] = {
         .required_flag          = 0,
         .commands               = {"MOVE ROCK", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message05107,
+        .message_if_unset       = MESSAGE05107,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -912,7 +925,7 @@ Scene scene052 = {
     .graphic_ptn1           = SC052_PTN_BLK1,
     .graphic_col0           = SC052_COL_BLK0,
     .graphic_col1           = SC052_COL_BLK1,
-    .message                = message05200,
+    .message                = MESSAGE05200,
     .choices                = choices052
 };
 
@@ -933,7 +946,7 @@ Choice choices053[4] = {
         .required_flag          = 0,
         .commands               = {"LOOK ROCK", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message05301,
+        .message_if_unset       = MESSAGE05301,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -944,7 +957,7 @@ Choice choices053[4] = {
         .required_flag          = 0,
         .commands               = {"MOVE ROCK", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message05107,
+        .message_if_unset       = MESSAGE05107,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -966,14 +979,14 @@ Scene scene053 = {
     .graphic_ptn1           = SC053_PTN_BLK1,
     .graphic_col0           = SC053_COL_BLK0,
     .graphic_col1           = SC053_COL_BLK1,
-    .message                = message05300,
+    .message                = MESSAGE05300,
     .choices                = choices053
 };
 
 
 Scene scene060 = {
     .sceneId                = SCENE06,
-    .flag_to_check          = FLAG_KILL_SKELTON,
+    .flag_to_check          = FLAG_KILL_SKELETON,
     .next_sceneId_if_unset  = SCENE06_1,
     .next_sceneId_if_set    = SCENE06_2,
     .graphic_bank           = 0,
@@ -1000,12 +1013,12 @@ Choice choices061[8] = {
     },
     {
         .required_flag          = 0,
-        .commands               = {"LOOK SKELTON", NULL},
-        .flag_to_check          = FLAG_LOOK_SKELTON,
-        .message_if_unset       = message06101,
-        .set_flag_if_unset      = FLAG_LOOK_SKELTON,
+        .commands               = {"LOOK SKELETON", NULL},
+        .flag_to_check          = FLAG_LOOK_SKELETON,
+        .message_if_unset       = MESSAGE06101,
+        .set_flag_if_unset      = FLAG_LOOK_SKELETON,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message06102,
+        .message_if_set         = MESSAGE06102,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = OVER,
     },
@@ -1013,19 +1026,19 @@ Choice choices061[8] = {
         .required_flag          = FLAG_HAVE_SWORD,
         .commands               = {"USE SWORD", "EQUIP SWORD", NULL},
         .flag_to_check          = FLAG_EQUIP_SWORD,
-        .message_if_unset       = message06103,
+        .message_if_unset       = MESSAGE06103,
         .set_flag_if_unset      = FLAG_EQUIP_SWORD,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message06104,
+        .message_if_set         = MESSAGE06104,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = NOSCENE,
     },
     {
         .required_flag          = FLAG_EQUIP_SWORD,
-        .commands               = {"ATTACK SKELTON", "BATTLE SKELTON", "KILL SKELTON", NULL},
+        .commands               = {"ATTACK SKELETON", "BATTLE SKELETON", "KILL SKELETON", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message06105,
-        .set_flag_if_unset      = FLAG_KILL_SKELTON,
+        .message_if_unset       = MESSAGE06105,
+        .set_flag_if_unset      = FLAG_KILL_SKELETON,
         .next_sceneId_if_unset  = SCENE06_2,
         .message_if_set         = NULL,
         .set_flag_if_set        = 0,
@@ -1033,9 +1046,9 @@ Choice choices061[8] = {
     },
     {
         .required_flag          = 0,
-        .commands               = {"ATTACK SKELTON", "BATTLE SKELTON", "KILL SKELTON", NULL},
+        .commands               = {"ATTACK SKELETON", "BATTLE SKELETON", "KILL SKELETON", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message06106,
+        .message_if_unset       = MESSAGE06106,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = OVER,
         .message_if_set         = NULL,
@@ -1045,11 +1058,11 @@ Choice choices061[8] = {
     {
         .required_flag          = 0,
         .commands               = {"LOOK SKARF", NULL},
-        .flag_to_check          = FLAG_LOOK_SKELTON,
-        .message_if_unset       = message06107,
-        .set_flag_if_unset      = FLAG_LOOK_SKELTON,
+        .flag_to_check          = FLAG_LOOK_SKELETON,
+        .message_if_unset       = MESSAGE06107,
+        .set_flag_if_unset      = FLAG_LOOK_SKELETON,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message06102,
+        .message_if_set         = MESSAGE06102,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = OVER,
     },
@@ -1057,7 +1070,7 @@ Choice choices061[8] = {
         .required_flag          = 0,
         .commands               = {"GET SKARF", "TAKE SKARF", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message06108,
+        .message_if_unset       = MESSAGE06108,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -1079,7 +1092,7 @@ Scene scene061 = {
     .graphic_ptn1           = SC061_PTN_BLK1,
     .graphic_col0           = SC061_COL_BLK0,
     .graphic_col1           = SC061_COL_BLK1,
-    .message                = message06100,
+    .message                = MESSAGE06100,
     .choices                = choices061
 };
 
@@ -1109,9 +1122,9 @@ Choice choices062[8] = {
     },
     {
         .required_flag          = 0,
-        .commands               = {"LOOK SKELTON", NULL},
+        .commands               = {"LOOK SKELETON", "LOOK BORN", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message06201,
+        .message_if_unset       = MESSAGE06201,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -1122,7 +1135,7 @@ Choice choices062[8] = {
         .required_flag          = 0,
         .commands               = {"LOOK SWORD", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message06202,
+        .message_if_unset       = MESSAGE06202,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -1133,7 +1146,7 @@ Choice choices062[8] = {
         .required_flag          = 0,
         .commands               = {"GET SWORD", "TAKE SWORD", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message06203,
+        .message_if_unset       = MESSAGE06203,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -1144,7 +1157,7 @@ Choice choices062[8] = {
         .required_flag          = 0,
         .commands               = {"LOOK SKARF", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message06204,
+        .message_if_unset       = MESSAGE06204,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -1155,10 +1168,10 @@ Choice choices062[8] = {
         .required_flag          = 0,
         .commands               = {"GET SKARF", "TAKE SKARF", NULL},
         .flag_to_check          = FLAG_HAVE_SKARF,
-        .message_if_unset       = message06205,
+        .message_if_unset       = MESSAGE06205,
         .set_flag_if_unset      = FLAG_HAVE_SKARF,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message03204,
+        .message_if_set         = MESSAGE03204,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = NOSCENE,
     },
@@ -1172,12 +1185,12 @@ Scene scene062 = {
     .flag_to_check          = 0,
     .next_sceneId_if_unset  = NULL,
     .next_sceneId_if_set    = NULL,
-    .graphic_bank           = 3,
+    .graphic_bank           = 1,
     .graphic_ptn0           = SC062_PTN_BLK0,
     .graphic_ptn1           = SC062_PTN_BLK1,
     .graphic_col0           = SC062_COL_BLK0,
     .graphic_col1           = SC062_COL_BLK1,
-    .message                = message06200,
+    .message                = MESSAGE06200,
     .choices                = choices062
 };
 
@@ -1196,9 +1209,9 @@ Choice choices070[6] = {
     },
     {
         .required_flag          = 0,
-        .commands               = {"LOOK PILLER", NULL},
+        .commands               = {"LOOK PILLAR", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message07001,
+        .message_if_unset       = MESSAGE07001,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -1207,20 +1220,20 @@ Choice choices070[6] = {
     },
     {
         .required_flag          = FLAG_HAVE_SKARF,
-        .commands               = {"POLISH PILLER", NULL},
+        .commands               = {"POLISH PILLAR", "WIPE PILLAR", NULL},
         .flag_to_check          = FLAG_POLISH_PILLER,
-        .message_if_unset       = message07002,
+        .message_if_unset       = MESSAGE07002,
         .set_flag_if_unset      = FLAG_POLISH_PILLER,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = message07003,
+        .message_if_set         = MESSAGE07003,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = ENDING,
     },
     {
         .required_flag          = 0,
-        .commands               = {"POLISH PILLER", NULL},
+        .commands               = {"POLISH PILLAR", "WIPE PILLAR", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message07004,
+        .message_if_unset       = MESSAGE07004,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -1231,7 +1244,7 @@ Choice choices070[6] = {
         .required_flag          = 0,
         .commands               = {"LOOK ROOM", NULL},
         .flag_to_check          = 0,
-        .message_if_unset       = message07005,
+        .message_if_unset       = MESSAGE07005,
         .set_flag_if_unset      = 0,
         .next_sceneId_if_unset  = NOSCENE,
         .message_if_set         = NULL,
@@ -1248,12 +1261,12 @@ Scene scene070 = {
     .flag_to_check          = 0,
     .next_sceneId_if_unset  = NULL,
     .next_sceneId_if_set    = NULL,
-    .graphic_bank           = 3,
+    .graphic_bank           = 4,
     .graphic_ptn0           = SC070_PTN_BLK0,
     .graphic_ptn1           = SC070_PTN_BLK1,
     .graphic_col0           = SC070_COL_BLK0,
     .graphic_col1           = SC070_COL_BLK1,
-    .message                = message07000,
+    .message                = MESSAGE07000,
     .choices                = choices070
 };
 

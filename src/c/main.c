@@ -23,12 +23,23 @@
 extern uint8_t FONT_COL_TBL[];
 extern uint8_t FONT_PTN_TBL[];
 
+// プロンプトメッセージ
+uint8_t promptMessage[] = { 0x3E, 0x00 };
 
-// コマンド入力用バッファ
-uint8_t input_buffer[32 - sizeof(promptMessage)];
+// カーソル文字
+uint8_t cursor[] = {0x5f, 0x00};
 
 // ヘルプコマンド
 uint8_t helpCommand[] = {0x48, 0x45, 0x4C, 0x50, 0x00};
+
+// ブランク文字
+uint8_t *blank = " ";
+
+// デバッグ用文字
+uint8_t *debug = "*";
+
+// コマンド入力用バッファ
+uint8_t input_buffer[32 - sizeof(promptMessage)];
 
 // キー入力バッファ
 uint8_t key_buffer;
@@ -61,7 +72,7 @@ void input_command()
     buffer_ix = 0;
 
     // プロンプト表示
-    put_message(0, PROMPT_LINE, promptMessage);
+    put_message_direct(0, PROMPT_LINE, promptMessage);
 
     // キーバッファクリア
     buffer_check();
@@ -69,8 +80,8 @@ void input_command()
     // ループ開始
     while(enter_flg == false) {
         // バッファ内容表示
-        put_message(sizeof(promptMessage) - 1, PROMPT_LINE , input_buffer);
-        put_message(sizeof(promptMessage) + buffer_ix - 1, PROMPT_LINE , cursor);
+        put_message_direct(sizeof(promptMessage) - 1, PROMPT_LINE , input_buffer);
+        put_message_direct(sizeof(promptMessage) + buffer_ix - 1, PROMPT_LINE , cursor);
 
         // キーバッファクリア
 //        msx_clearkey();
@@ -97,7 +108,7 @@ void input_command()
         if (key_buffer == 0x08) {
             if (buffer_ix > 0) {
                 buffer_ix--;
-                put_message(sizeof(promptMessage) + buffer_ix, PROMPT_LINE, blank);
+                put_message_direct(sizeof(promptMessage) + buffer_ix, PROMPT_LINE, blank);
             }
             input_buffer[buffer_ix] = 0x00;
             continue;
@@ -193,6 +204,7 @@ void run_scene(SceneId start_scene_id)
                 }
 
                 // メッセージを表示
+                clear_message();
                 put_message(0, 17, scene->message);
 
                 if (scene->sceneId == OVER) {
@@ -221,7 +233,7 @@ void run_scene(SceneId start_scene_id)
                 (scene->sceneId != TITLE) &&
                 (scene->sceneId != PROLOGUE)) {
 
-                put_message(0, 17, messagehelp);
+                put_message(0, 17, HELPMESSAGE);
                 matched = true;
 
             } else {
@@ -304,7 +316,7 @@ void run_scene(SceneId start_scene_id)
             // コマンドがマッチしたか
             if (!matched) {
                 // コマンドがマッチしなかった場合は、固定のメッセージを表示する
-                put_message(0, 17, dontMessage);
+                put_message(0, 17, DONTMESSAGE);
             }
         }
     }
@@ -316,16 +328,20 @@ void init()
     // サウンドドライバー初期化
     sounddrv_init();
 
+    // 言語判定
+    check_region();
+
     // 画面初期化
     set_color(15, 1, 1);
     set_mangled_mode();
     msx_set_sprite_mode(sprite_large);
+    set_palette();
 
     // キークリックスイッチOFF
     *(uint8_t *)MSX_CLIKSW = 0;
 
     // キーのオートリピート開始までの時間間隔
-    // C-BIOSでは初期値1のため、明示的に設定
+    // C-BIOSでは初期値1のため、明示的に設定（でもすぐ上書きされて変更できない）
     *(uint8_t *)MSX_REPCNT = 50;
 
     // ブロック1/2のパターンジェネレータテーブル設定（ブランク）
@@ -337,8 +353,11 @@ void init()
 
     // ブロック3のパターンジェネレータテーブル／カラーテーブル設定（フォントパターン）
     switch_bank(1);
-    vdp_vwrite(FONT_PTN_TBL, VRAM_PTN_GENR_TBL3, VRAM_PTN_GENR_TBL_SIZE);
-    vdp_vwrite(FONT_COL_TBL, VRAM_COLOR_TBL3, VRAM_COLOR_TBL_SIZE);
+    unpack(FONT_PTN_TBL, temp);
+    vdp_vwrite(temp, VRAM_PTN_GENR_TBL3, VRAM_PTN_GENR_TBL_SIZE);
+    unpack(FONT_COL_TBL, temp);
+    vdp_vwrite(temp, VRAM_COLOR_TBL3, VRAM_PTN_GENR_TBL_SIZE);
+
 
     // パターンネームテーブル初期化
     uint8_t code = 0;
