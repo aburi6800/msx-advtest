@@ -719,7 +719,7 @@ Choice choices042[5] = {
     },
     {
         .required_flag          = 0,
-        .commands               = {"LOOK SNAKE", "LOOK BORN", NULL},
+        .commands               = {"LOOK SNAKE", "LOOK BONE", NULL},
         .flag_to_check          = 0,
         .message_if_unset       = MESSAGE04201,
         .set_flag_if_unset      = 0,
@@ -730,7 +730,7 @@ Choice choices042[5] = {
     },
     {
         .required_flag          = 0,
-        .commands               = {"GET BORN", "TAKE BORN", NULL},
+        .commands               = {"GET BONE", "TAKE BONE", NULL},
         .flag_to_check          = 0,
         .message_if_unset       = MESSAGE04202,
         .set_flag_if_unset      = 0,
@@ -1122,7 +1122,7 @@ Choice choices062[8] = {
     },
     {
         .required_flag          = 0,
-        .commands               = {"LOOK SKELETON", "LOOK BORN", NULL},
+        .commands               = {"LOOK SKELETON", "LOOK BONE", NULL},
         .flag_to_check          = 0,
         .message_if_unset       = MESSAGE06201,
         .set_flag_if_unset      = 0,
