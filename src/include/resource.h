@@ -147,6 +147,7 @@ extern uint8_t MESSAGE06202[];
 extern uint8_t MESSAGE06203[];
 extern uint8_t MESSAGE06204[];
 extern uint8_t MESSAGE06205[];
+extern uint8_t MESSAGE06206[];
 
 extern uint8_t SC070_PTN_BLK0[];
 extern uint8_t SC070_PTN_BLK1[];

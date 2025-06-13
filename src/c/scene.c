@@ -1171,7 +1171,7 @@ Choice choices062[8] = {
         .message_if_unset       = MESSAGE06205,
         .set_flag_if_unset      = FLAG_HAVE_SKARF,
         .next_sceneId_if_unset  = NOSCENE,
-        .message_if_set         = MESSAGE03204,
+        .message_if_set         = MESSAGE06206,
         .set_flag_if_set        = 0,
         .next_sceneId_if_set    = NOSCENE,
     },
