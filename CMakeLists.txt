@@ -18,6 +18,7 @@ add_source_files(
     ./src/asm/resource.asm
     ./src/asm/unpack.asm
     ./src/asm/asmsub.asm
+    ./src/asm/logo.asm
     ./src/c/main.c
 )
 

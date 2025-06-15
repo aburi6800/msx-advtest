@@ -2,22 +2,22 @@
 ; copyright-holders:aburi6800 (Hitoshi Iwai)
 
 ; BIOS
-#define MSX_WRTVRM              0x004d
-#define MSX_GTTRIG              0x00d8
-#define MSX_CHSNS               0x009c
-#define MSX_CHGET               0x009f
-#define MSX_KILBUF              0x0156
+WRTVRM              equ 0x004d
+GTTRIG              equ 0x00d8
+CHSNS               equ 0x009c
+CHGET               equ 0x009f
+KILBUF              equ 0x0156
 
 ; SUB-ROM BIOS(MSX2 leter)
-#define SETPLT	                0x014d
-#define EXTROM                  0x015f
+SETPLT	            equ 0x014d
+EXTROM              equ 0x015f
 
 ; work area
-#define JIFFY                   0xfc9e
+JIFFY               equ 0xfc9e
 
 ; VRAM address
-#define VRAM_PTN_NAME_TBL1      0x1800
-#define VRAM_PTN_NAME_TBL3      0x1A00
+VRAM_PTN_NAME_TBL1  equ 0x1800
+VRAM_PTN_NAME_TBL3  equ 0x1A00
 
 
 EXTERN SOUNDDRV_INIT
@@ -45,6 +45,7 @@ PUBLIC _buffer_check
 PUBLIC _switch_bank
 PUBLIC _check_region
 PUBLIC _set_palette
+PUBLIC _REGION
 
 
 SECTION code_user
@@ -193,7 +194,7 @@ put_message_L6:
 
 put_message_L7:
     ; put character
-    call    MSX_WRTVRM
+    call    WRTVRM
     inc     hl
 
 put_message_exit:
@@ -334,7 +335,7 @@ clear_message_L1:
     ld      b, 32                   ; 32 columns
 
 clear_message_L2:
-    call    MSX_WRTVRM
+    call    WRTVRM
     inc     hl
     djnz    clear_message_L2
 
@@ -359,8 +360,8 @@ clear_message_exit:
 ; ============================================================
 _getkeycode:
 getkeycode:
-    call    MSX_KILBUF
-    call    MSX_CHGET
+    call    KILBUF
+    call    CHGET
     ld      h, a    ; return parameter
     ld      l, 0
 
@@ -394,7 +395,7 @@ keywait:
 
 keywait_L1:
     ld      a, 0                    ; 0 = keyboard
-    call    MSX_GTTRIG
+    call    GTTRIG
     or      a
     jp      z, keywait_L1
 
@@ -438,9 +439,9 @@ timewait_L1:
 ; ============================================================
 _buffer_check:
 buffer_check:
-    call    MSX_CHSNS
+    call    CHSNS
     ret     z
-    call    MSX_CHGET
+    call    CHGET
     jr      _buffer_check
 
 
@@ -451,6 +452,8 @@ buffer_check:
 ; exit  : void
 ; ============================================================
 _switch_bank:
+    di
+
     ld      hl, 2
     add     hl, sp
     ld      a, (hl)     ; get arg value
@@ -458,6 +461,8 @@ _switch_bank:
 switch_bank:
     ld      hl, 0x7000  ; ASCII16 Mapper control port(0x8000～0x8fff)
     ld      (hl), a
+
+    ei
     ret
 
 
@@ -496,9 +501,10 @@ check_region_exit:
 ; ============================================================
 _set_palette:
 set_palette:
+    ; check MSX version
 	ld		a, (0x002d)
 	or		a
-	ret		Z
+	ret		z
 
 	ld		ix, SETPLT  ; Set BIOS entry address
 	ld 		hl, _PALLETE_DATA
@@ -517,7 +523,6 @@ set_palette_1:
 	jr		nz, set_palette_1
 
 set_palette_exit:
-    ei
     ret
 
 
@@ -548,5 +553,6 @@ _PALLETE_DATA:
 
 
 SECTION bss_user
+_REGION:
 REGION:
     db  00                  ; 00=Japanese, 01=English

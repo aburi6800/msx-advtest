@@ -14,8 +14,9 @@
 #include "../include/music.h"
 #include "../include/const.h"
 #include "../include/unpack.h"
-#include "../include/asmsub.h"
 #include "../include/psgdriver.h"
+#include "../include/asmsub.h"
+#include "../include/logo.h"
 #include "./scene.c"
 
 
@@ -325,17 +326,18 @@ void run_scene(SceneId start_scene_id)
 
 void init()
 {
-    // サウンドドライバー初期化
-    sounddrv_init();
-
     // 言語判定
     check_region();
 
-    // 画面初期化
-    set_color(15, 1, 1);
-    set_mangled_mode();
-    msx_set_sprite_mode(sprite_large);
+    // サウンドドライバー初期化
+    sounddrv_init();
+
+    // ロゴ表示
+    boot_logo();
+
+    // パレット変更
     set_palette();
+
 
     // キークリックスイッチOFF
     *(uint8_t *)MSX_CLIKSW = 0;
@@ -343,13 +345,6 @@ void init()
     // キーのオートリピート開始までの時間間隔
     // C-BIOSでは初期値1のため、明示的に設定（でもすぐ上書きされて変更できない）
     *(uint8_t *)MSX_REPCNT = 50;
-
-    // ブロック1/2のパターンジェネレータテーブル設定（ブランク）
-    for (uint16_t i = 0; i < sizeof(temp); i++) {
-        temp[i] = 0x00;
-    }
-    vdp_vwrite(temp, VRAM_PTN_GENR_TBL1, VRAM_PTN_GENR_TBL_SIZE);
-    vdp_vwrite(temp, VRAM_PTN_GENR_TBL2, VRAM_PTN_GENR_TBL_SIZE);
 
     // ブロック3のパターンジェネレータテーブル／カラーテーブル設定（フォントパターン）
     switch_bank(1);
@@ -361,7 +356,6 @@ void init()
 
     // パターンネームテーブル初期化
     uint8_t code = 0;
-
     for (uint16_t i = 0; i < 256; i++) {
         temp[i] = 254;
     }

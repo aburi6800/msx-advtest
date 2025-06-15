@@ -26,6 +26,13 @@
 
 <br>
 
+## Notice
+
+- The message display language is automatically set based on the MSX BIOS.  
+- However, by pressing the SELECT key while the “ABURI GAMES” logo is displayed, it is possible to set the display language to English even on Japanese MSX.  
+
+<br>
+
 ## How to Build
 
 Requires z88dk and cmake.  
