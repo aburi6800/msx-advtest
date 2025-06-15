@@ -37,22 +37,12 @@ BOOT_LOGO:
     ; set screen mode
     call    INIT32
     call    SETGRP
+
     ld      a, 0
     ld      (FORCLR), a
     ld      (BAKCLR), a
     ld      (BDRCLR), a
     call    CHGCLR
-
-    ; set sprite mode
-    ld      a, (WRVDP)
-    inc     a
-    ld      c, a                    ; set vdp write #1(control register) port
-
-    ld      a, 0b01100011           ; SI=1(16x16), MAG=1(double size)
-    out     (c), a
-
-    ld      a, 0b10000001           ; mode register #1
-    out     (c), a
 
 
     ; clear pattern name table
@@ -82,6 +72,20 @@ BOOT_LOGO:
     ; clear sprite
     call    CLRSPR
 
+    ; set sprite mode
+    di
+    ld      a, (WRVDP)
+    inc     a
+    ld      c, a                    ; set control register#1(vdp write) port
+    ld      a, 0b01100011           ; SI=1(16x16), MAG=1(double size)
+    nop
+    out     (c), a
+    nop
+    ld      a, 0b10000001           ; mode register #1
+    nop
+    out     (c), a
+    nop
+    ei
 
     ; set sprtite pattern
     ld      hl, LOGO_PATTERN        ; source address(ram)
