@@ -84,6 +84,12 @@ put_message:
     inc     hl
     inc     hl
 
+    dec     a
+    jr      z, put_message_L0
+
+    inc     hl
+    inc     hl
+
 put_message_L0:
     ld      e, (hl)
     inc     hl
@@ -555,4 +561,4 @@ _PALLETE_DATA:
 SECTION bss_user
 _REGION:
 REGION:
-    db  00                  ; 00=Japanese, 01=English
+    db  00                  ; 00=Japanese, 01=English, 02=Spanish
