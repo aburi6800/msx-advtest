@@ -21,8 +21,11 @@
 
 
 // font.asmへの参照
-extern uint8_t FONT_COL_TBL[];
-extern uint8_t FONT_PTN_TBL[];
+//extern uint8_t FONT_COL_TBL[];
+extern uint8_t FONT_PTN_TBL_JP_EN[];
+extern uint8_t FONT_PTN_TBL_SP_PR[];
+
+extern uint8_t REGION;
 
 // プロンプトメッセージ
 uint8_t promptMessage[] = { 0x3E, 0x00 };
@@ -329,15 +332,14 @@ void init()
     // 言語判定
     check_region();
 
+    // パレット変更
+    set_palette();
+
     // サウンドドライバー初期化
     sounddrv_init();
 
     // ロゴ表示
     boot_logo();
-
-    // パレット変更
-    set_palette();
-
 
     // キークリックスイッチOFF
     *(uint8_t *)MSX_CLIKSW = 0;
@@ -346,13 +348,20 @@ void init()
     // C-BIOSでは初期値1のため、明示的に設定（でもすぐ上書きされて変更できない）
     *(uint8_t *)MSX_REPCNT = 50;
 
-    // ブロック3のパターンジェネレータテーブル／カラーテーブル設定（フォントパターン）
+    // ブロック3のパターンジェネレータテーブル設定（フォントパターン）
     switch_bank(1);
-    unpack(FONT_PTN_TBL, temp);
+    if (REGION == 0 || REGION == 1) {
+        unpack(FONT_PTN_TBL_JP_EN, temp);
+    } else {
+        unpack(FONT_PTN_TBL_SP_PR, temp);
+    }
     vdp_vwrite(temp, VRAM_PTN_GENR_TBL3, VRAM_PTN_GENR_TBL_SIZE);
-    unpack(FONT_COL_TBL, temp);
-    vdp_vwrite(temp, VRAM_COLOR_TBL3, VRAM_PTN_GENR_TBL_SIZE);
 
+    // ブロック3のカラーテーブル設定（フォントパターン）
+    for (uint16_t i = 0; i < 0x0800; i++) {
+        temp[i] = 0xf0;
+    }
+    vdp_vwrite(temp, VRAM_COLOR_TBL3, VRAM_PTN_GENR_TBL_SIZE);
 
     // パターンネームテーブル初期化
     uint8_t code = 0;

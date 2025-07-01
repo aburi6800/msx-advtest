@@ -13,6 +13,7 @@ SETPLT	            equ 0x014d
 EXTROM              equ 0x015f
 
 ; work area
+MSXVER              equ 0x002d
 JIFFY               equ 0xfc9e
 
 ; VRAM address
@@ -508,7 +509,7 @@ check_region_exit:
 _set_palette:
 set_palette:
     ; check MSX version
-	ld		a, (0x002d)
+	ld		a, (MSXVER)
 	or		a
 	ret		z
 
@@ -524,8 +525,9 @@ set_palette_1:
 	call	EXTROM
 
 	inc		d
-	ld		a, 16
-	sub		d
+    ld      a, d
+    cp      16
+
 	jr		nz, set_palette_1
 
 set_palette_exit:
