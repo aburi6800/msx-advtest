@@ -16,6 +16,10 @@ add_source_files(
     ./src/asm/font.asm
     ./src/asm/music.asm
     ./src/asm/resource.asm
+    ./src/asm/resource_bank01.asm
+    ./src/asm/resource_bank02.asm
+    ./src/asm/resource_bank03.asm
+    ./src/asm/resource_bank04.asm
     ./src/asm/unpack.asm
     ./src/asm/asmsub.asm
     ./src/asm/logo.asm
@@ -32,7 +36,7 @@ add_compile_flags(C
     #-lndos
     -lmsxbios
 #    --list
-#    -m
+    -m
 #    -s
     # https://github.com/z88dk/z88dk/wiki/Classic-allocation#automatic-heap-configuration
     -DAMALLOC
