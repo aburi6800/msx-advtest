@@ -197,7 +197,8 @@ BOOT_SELECT_LANG_3:
 
     ; 言語コード <> 2 ?
     ld      a, (_REGION)
-    cp      2
+;    cp      2
+    cp      1
     jr      z, BOOT_SELECT_LANG_4
 
     ; 言語コード + 1
