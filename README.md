@@ -29,7 +29,7 @@
 ## Notice
 
 - The message display language is automatically set based on the MSX BIOS.  
-- However, by pressing the SELECT key while the “ABURI GAMES” logo is displayed, it is possible to set the display language to English even on Japanese MSX.  
+- However, by pressing the SELECT key when the “ABURI GAMES” logo is displayed and operating the cursor keys, the display language can be set to English on the Japanese MSX.  
 
 <br>
 
